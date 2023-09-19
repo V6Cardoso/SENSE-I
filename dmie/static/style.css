@@ -1,0 +1,90 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #c5c5c5;
+}
+
+a {text-decoration: none;}
+a:hover {text-decoration: none;}
+a:visited { color: white;}
+
+
+/* Create a button to open the navigation */
+.open-button {
+  position: relative;
+  background-color: #333;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+/* Style the navigation menu container */
+.nav-container {
+  position: fixed;
+  left: -300px;
+  top: 0;
+  width: 300px;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+  overflow-x: hidden;
+  transition: 0.3s;
+  z-index: 1;
+  backdrop-filter: blur(5px); /* Apply a blur effect to the page content */
+}
+
+/* Show the navigation menu when it's open */
+.nav-container.open {
+  left: 0;
+}
+
+/* Style the navigation menu content */
+.nav-content {
+  padding: 10px;
+  color: white;
+  text-decoration: none;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Style the navigation user info */
+.nav-user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px 0;
+}
+
+/* Style the navigation user info image */
+.nav-user-info__img {
+  object-fit: cover;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: white;
+  margin-bottom: 10px;
+}
+
+/* Style the navigation links */
+.nav-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+/* Close button style */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block style %} 
+  <link rel="stylesheet" href="{{ url_for('static', filename='board/style.css') }}">
+{% endblock %}
+
+{% block header %}
+  <h1>{% block title %}Dashboard{% endblock %}</h1>
+  {% if g.user %}
+    <h1>Olá {{ g.user['username'] }}</h1>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <button disabled>Criar novo quadro</button>
+  <div class="grid">
+    <div class="container">
+      <h3>Quadro 1</h3>
+      <p>mock test</p>
+      <div id="chart-container"></div>
+    </div>
+  
+    <div class="container">
+      <h3>Quadro 2</h3>
+      <p><a>https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv</a>></p>
+      <div id="chart-container2"></div>
+    </div>
+  
+    <div class="container">
+      <h3>Temperatura</h3>
+      <div id="chart-container3"></div>
+    </div>
+  
+    <div class="container">
+      <h3>Luminosidade</h3>
+      <div id="chart-container4"></div>
+    </div>
+  
+    <div class="container">
+      <h3>Umidade</h3>
+      <div id="chart-container5"></div>
+    </div>
+  </div>
+  
+{% endblock %}
+
+{% block script %}
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="{{ url_for('static', filename='board/board1.js') }}"></script>
+{% endblock %}
+```
+

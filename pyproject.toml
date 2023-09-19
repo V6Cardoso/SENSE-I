@@ -1,0 +1,36 @@
+[project]
+name = "dmie"
+version = "1.0.0"
+description = "Dashboard de Monitoramento inteligente para estufas"
+readme = "README.md"
+license = "MIT"
+maintainers = [{name = "Victor Cardoso", email = "59899335+V6Cardoso@users.noreply.github.com."}]
+dependencies = [
+    "flask",
+]
+
+[project.urls]
+Documentation = "https://github.com/V6Cardoso/dmie/docs"
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[build-system]
+requires = ["flit_core<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.module]
+name = "dmie"
+
+[tool.flit.sdist]
+include = [
+    "tests/",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["error"]
+
+[tool.coverage.run]
+branch = true
+source = ["dmie", "tests"]
