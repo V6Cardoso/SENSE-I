@@ -154,182 +154,25 @@ var svg3 = d3.select("#chart-container3")
           "translate(" + margin.left + "," + margin.top + ")");
 
 
-
-mockdata = [
-    {
-        "id": "2",
-        "type": "iot",
-        "humidity": {
-            "type": "float",
-            "value": 51.4,
-            "metadata": {}
-        },
-        "luminosity": {
-            "type": "integer",
-            "value": 21.67,
-            "metadata": {}
-        },
-        "temperature": {
-            "type": "float",
-            "value": 27.1,
-            "metadata": {}
-        }
-    },
-    {
-        "id": "3",
-        "type": "iot",
-        "humidity": {
-            "type": "float",
-            "value": 51.4,
-            "metadata": {}
-        },
-        "luminosity": {
-            "type": "integer",
-            "value": 20.83,
-            "metadata": {}
-        },
-        "temperature": {
-            "type": "float",
-            "value": 27.1,
-            "metadata": {}
-        }
-    },
-    {
-        "id": "4",
-        "type": "iot",
-        "humidity": {
-            "type": "float",
-            "value": 51.4,
-            "metadata": {}
-        },
-        "luminosity": {
-            "type": "integer",
-            "value": 20.83,
-            "metadata": {}
-        },
-        "temperature": {
-            "type": "float",
-            "value": 27.1,
-            "metadata": {}
-        }
-    },
-    {
-        "id": "5",
-        "type": "iot",
-        "humidity": {
-            "type": "float",
-            "value": 51.4,
-            "metadata": {}
-        },
-        "luminosity": {
-            "type": "integer",
-            "value": 20.83,
-            "metadata": {}
-        },
-        "temperature": {
-            "type": "float",
-            "value": 27.1,
-            "metadata": {}
-        }
-    },
-    {
-        "id": "6",
-        "type": "iot",
-        "humidity": {
-            "type": "float",
-            "value": 51.3,
-            "metadata": {}
-        },
-        "luminosity": {
-            "type": "integer",
-            "value": 20.83,
-            "metadata": {}
-        },
-        "temperature": {
-            "type": "float",
-            "value": 27.1,
-            "metadata": {}
-        }
-    },
-    {
-        "id": "7",
-        "type": "iot",
-        "humidity": {
-            "type": "float",
-            "value": 51.4,
-            "metadata": {}
-        },
-        "luminosity": {
-            "type": "integer",
-            "value": 20.83,
-            "metadata": {}
-        },
-        "temperature": {
-            "type": "float",
-            "value": 27.1,
-            "metadata": {}
-        }
-    },
-    {
-        "id": "8",
-        "type": "iot",
-        "humidity": {
-            "type": "float",
-            "value": 51.3,
-            "metadata": {}
-        },
-        "luminosity": {
-            "type": "integer",
-            "value": 20.83,
-            "metadata": {}
-        },
-        "temperature": {
-            "type": "float",
-            "value": 27.1,
-            "metadata": {}
-        }
-    },
-    {
-        "id": "9",
-        "type": "iot",
-        "humidity": {
-            "type": "float",
-            "value": 51.3,
-            "metadata": {}
-        },
-        "luminosity": {
-            "type": "integer",
-            "value": 20.83,
-            "metadata": {}
-        },
-        "temperature": {
-            "type": "float",
-            "value": 27.1,
-            "metadata": {}
-        }
-    },
-    {
-        "id": "10",
-        "type": "iot",
-        "humidity": {
-            "type": "float",
-            "value": 51.3,
-            "metadata": {}
-        },
-        "luminosity": {
-            "type": "integer",
-            "value": 21.67,
-            "metadata": {}
-        },
-        "temperature": {
-            "type": "float",
-            "value": 27.1,
-            "metadata": {}
-        }
-    }
-];
-
 //basic api request
 /* d3.json("http://20.226.95.43:1026/v2/entities", function(data) {
-  console.log(data);
+  
 }); */
+
+
+var svg4 = d3.select("#chart-container4")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+
+var svg5 = d3.select("#chart-container5")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
