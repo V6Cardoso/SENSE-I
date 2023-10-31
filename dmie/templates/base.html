@@ -1,9 +1,13 @@
 <!doctype html>
-<title>Dmie {% block title %}{% endblock %}</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-{% block style %}{% endblock %}
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
+<head>
+  <title>Dmie {% block title %}{% endblock %}</title>
+  <!-- <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}"> -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+  {% block style %}{% endblock %}
+  {% block head %}{% endblock %}
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
 
 <button class="open-button" onclick="toggleNav()">Menu</button>
 <nav class="nav-container" id="navMenu">
@@ -40,4 +44,5 @@
 </section>
 
 <script src="{{ url_for('static', filename='script.js') }}"></script>
+<!-- <script src="{{ url_for('static', filename='pwa.js') }}"></script> -->
 {% block script %}{% endblock %}
