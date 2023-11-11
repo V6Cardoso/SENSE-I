@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
-<button class="open-button" onclick="toggleNav()">Menu</button>
+<button class="open-button" onclick="toggleNav()">☰</button>
 <nav class="nav-container" id="navMenu">
   <div class="close-button" onclick="toggleNav()">&times;</div>
   <div class="nav-content">
@@ -37,7 +37,7 @@
 </nav>
 <section class="content">
   <header>
-    {% block header %}{% endblock %}
+    <h1 class="title">{% block header %}{% endblock %}</h1>
   </header>
   {% block content %}{% endblock %}
 </section>

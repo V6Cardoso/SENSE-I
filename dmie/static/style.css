@@ -1,24 +1,59 @@
 body, html {
-  margin: 0;
-  padding: 0;
   font-family: Arial, sans-serif;
   background-color: #c5c5c5;
 }
 
+/* Remove default margin */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 a {text-decoration: none;}
-a:hover {text-decoration: none;}
-a:visited { color: white;}
+a:hover {color: inherit;}
+a:visited {color: inherit;}
 
-
-/* Create a button to open the navigation */
-.open-button {
-  position: relative;
+/* Title */
+.title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
   background-color: #333;
   color: white;
-  padding: 10px 15px;
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* content */
+
+.content__default {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 40px;
+}
+
+
+
+
+
+
+
+/* Navigation menu */
+/* Create a button to open the navigation */
+.open-button {
+  position: absolute;
+  background-color: #333;
+  color: white;
+  height: 100px;
+  padding: 20px 20px;
   border: none;
   border-radius: 2px;
   cursor: pointer;
+  font-size: 30px;
 }
 
 /* Style the navigation menu container */
@@ -95,6 +130,6 @@ a:visited { color: white;}
   top: 10px;
   right: 10px;
   color: white;
-  font-size: 20px;
+  font-size: 40px;
   cursor: pointer;
 }

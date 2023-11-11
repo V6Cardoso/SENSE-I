@@ -26,14 +26,14 @@
 
 
 {% block header %}
-  <h1>{% block title %}Dashboard{% endblock %}</h1>
-  {% if g.user %}
-    <h1>Olá {{ g.user['username'] }}</h1>
-  {% endif %}
+  {% block title %}Dashboard{% endblock %}
 {% endblock %}
 
 {% block content %}
-  <button disabled>Criar novo quadro</button>
+  {% if g.user %}
+  <h1 class="content__default">Olá {{ g.user['username'] }}</h1>
+  {% endif %}
+  <button class="content__default" disabled>Criar novo quadro</button>
   <div class="grid"></div>
   
 {% endblock %}
