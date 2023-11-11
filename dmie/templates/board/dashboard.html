@@ -7,6 +7,7 @@
 {% block head %}
   <script>
     let data;
+    let callInProgress = false;
     function getOrionData() {
         event?.preventDefault();
         event?.stopPropagation();
@@ -17,7 +18,10 @@
               //console.log(JSON.stringify(response));
               data = response;
             },
-            error: function (response) {
+            error: function (response) {   
+            },
+            complete: function (response) {
+              callInProgress = false;
             }
         });
     }

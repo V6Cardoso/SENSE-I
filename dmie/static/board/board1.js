@@ -5,6 +5,8 @@ const height = 400 - margin.top - margin.bottom;
 
 const grid = document.querySelector('.grid');
 
+
+
 function Device(id, humidity, temperature, tempHumidity, tempTemperature) {
   this.id = id;
   this.humidity = humidity;
@@ -26,6 +28,9 @@ let svg = {};
 
 //get data from Orion every second
 function getData() {
+  //check if call is already in progress
+  if (callInProgress) return;
+  callInProgress = true;
   getOrionData();
 
   //check if data is type of array
