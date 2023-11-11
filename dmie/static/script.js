@@ -2,6 +2,7 @@
 function toggleNav() {
     var navMenu = document.getElementById("navMenu");
     navMenu.classList.toggle("open");
+    console.log('a')
 }
 
 
@@ -11,8 +12,8 @@ document.addEventListener('click', function(event) {
     if (!navMenu.classList.contains('open')) {
       return;
     }
-    var openButton = document.querySelector('.open-button');
-    if (event.target !== navMenu && event.target !== openButton) {
-      navMenu.classList.remove('open');
+    
+    if (!navMenu.contains(event.target) && (!event.target.classList.contains('open-button') && !event.target.classList.contains('close-button'))) {
+      toggleNav();
     }
 });

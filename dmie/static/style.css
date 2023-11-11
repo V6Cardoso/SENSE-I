@@ -79,6 +79,16 @@ a:visited { color: white;}
   flex-grow: 1;
 }
 
+/* Style the navigation links items */
+.nav-links__item {
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-links__item > span {
+  margin-left: 20px;
+}
+
 /* Close button style */
 .close-button {
   position: absolute;

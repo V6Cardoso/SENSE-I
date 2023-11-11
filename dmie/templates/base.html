@@ -27,12 +27,11 @@
     </div>
     <div class="nav-links">
       {% if g.user %}
-        <a href="{{ url_for('board.dashboard') }}">Início</a>
-        <a href="{{ url_for('board.about') }}">Sobre</a>
+        <a href="{{ url_for('board.dashboard') }}" class="nav-links__item"><span>Início</span></a>
       {% else %}
-        <a href="{{ url_for('board.index') }}">Início</a>
-        <a href="{{ url_for('board.about') }}">Sobre</a>
+        <a href="{{ url_for('board.index') }}" class="nav-links__item"><span>Início</span></a>
       {% endif %}
+      <a href="{{ url_for('board.about') }}" class="nav-links__item"><span>Sobre</span></a>
     </div>
   </div>
 </nav>

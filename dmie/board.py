@@ -42,7 +42,7 @@ def getOrionData():
         'Accept': 'application/json'
     }
     response = requests.request("GET", url, headers=headers)
-    print(response)
+    #print(response)
     return response.json()
     
 
