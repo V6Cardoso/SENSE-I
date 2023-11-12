@@ -34,8 +34,14 @@ def about():
 
 
 @bp.route("/getOrionData", methods=["POST"])
+@login_required
 def getOrionData():
-    url = "http://20.195.208.173:1026/v2/entities"
+
+    db = get_db()
+    
+    url = db.execute("SELECT url FROM server WHERE name = 'gcp'").fetchone()
+    url = url['url']
+    
     headers = {
         'fiware-service': 'smart',
         'fiware-servicepath': '/',
