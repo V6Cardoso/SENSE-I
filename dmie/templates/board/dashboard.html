@@ -34,16 +34,27 @@
 {% endblock %}
 
 {% block content %}
-  {% if g.user %}
-  <h1 class="content__default">Olá {{ g.user['username'] }}</h1>
-  {% endif %}
-  <button class="content__default" disabled>Criar novo quadro</button>
-  <div class="grid"></div>
+  <div class="grid">
+    <div class="container">
+      <h3>Dispositivo 1</h3>
+      <div id="orion__device1__temp" class="plotly"></div>
+      <div id="orion__device1__hum" class="plotly"></div>
+      <p id="orion__device1__last_update"  class="last__update">Última atualização em: </p>
+    </div>
+    <div class="sth">STH-Comet dashboard</div>
+    <div class="container">
+      <h3>Dispositivo 2</h3>
+      <div id="orion__device2__temp" class="plotly"></div>
+      <div id="orion__device2__hum" class="plotly"></div>
+      <p id="orion__device2__last_update" class="last__update">Última atualização em: </p>
+    </div>
+  </div>
   
 {% endblock %}
 
 {% block script %}
 <script src="https://d3js.org/d3.v4.min.js"></script>
+<script src='https://cdn.plot.ly/plotly-2.27.0.min.js'></script>
 <script src="{{ url_for('static', filename='board/board1.js') }}"></script>
 {% endblock %}
 ```

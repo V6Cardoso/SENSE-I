@@ -1,27 +1,71 @@
+
+
 .grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 4fr 1fr;
+    justify-items: stretch;
     align-items: center;
+
+    justify-content: space-between;
+
 }
+@media (max-width: 1300px) {
+    .grid {
+        grid-template-columns: 1fr
+    }
+
+    .container {
+        box-shadow: none;
+        border: none;
+    }
+
+    .container > :last-child {
+        text-align: center;
+    }
+
+    .sth {
+        grid-row: 1;
+    }
+}
+
 
 
 .container {
     display: flex;
     flex-direction: column;
     height: 100%;
-    width: fit-content;
-    margin: 10px;
-    padding: 10px;
+    width: 100%;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+
+.container .plotly {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .container > h3 {
     text-align: center;
+    margin-top: 10px;
 }
+
 
 .container > p {
     margin: 0;
     text-align: center;
     color: #858484;
+}
+
+.container > :last-child {
+    text-align: left;
+    margin: 5px;
+}
+
+.sth {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 }
