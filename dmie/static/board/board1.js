@@ -1,206 +1,100 @@
-// Set the dimensions of the chart
-const margin = { top: 20, right: 30, bottom: 30, left: 50 };
-const width = 650 - margin.left - margin.right;
-const height = 400 - margin.top - margin.bottom;
-
-const grid = document.querySelector('.grid');
+let lstUpdate1 = document.getElementById('orion__device1__last_update');
+let lstUpdate2 = document.getElementById('orion__device2__last_update');
 
 
 
-function Device(id, humidity, temperature, tempHumidity, tempTemperature) {
-  this.id = id;
-  this.humidity = humidity;
-  this.temperature = temperature;
-  this.tempHumidity = tempHumidity;
-  this.tempTemperature = tempTemperature;
+function OrionTemp(value) {
+  this.domain = { x: [0, 1], y: [0, 1] };
+  this.value = value;
+  this.title = { text: "Temperatura (°C)" };
+  this.type = "indicator";
+  this.mode = "gauge+number";
+  this.delta = { reference: 20 };
+  this.gauge = { 
+    axis: { 
+      range: [null, 100],
+      tickvals: [0, 20, 40, 60, 80, 100],
+      ticktext: ['0', '20', '40', '60', '80', '100']
+    },
+    bar: { color: 'steelblue' },
+  };
 }
 
-//compare two Devices
-Device.prototype.equals = function (device) {
-  return this.tempHumidity == device.tempHumidity && this.tempTemperature == device.tempTemperature;
+function OrionHumidity(value) {
+  this.domain = { x: [0, 1], y: [0, 1] };
+  this.value = value;
+  this.title = { text: "Umidade" };
+  this.type = "indicator";
+  this.mode = "gauge+number";
+  this.delta = { reference: 20 };
+  this.gauge = { 
+    axis: { 
+      range: [null, 100],
+      tickvals: [0, 20, 40, 60, 80, 100],
+      ticktext: ['0', '20', '40', '60', '80', '100']
+    },
+    bar: { color: 'steelblue' }
+  };
+  this.number = { suffix: "%" };
+  
 }
 
+var orionDevice1Temp = [new OrionTemp(0)];
+var orionDevice1Hum = [new OrionHumidity(0)];
+var orionDevice2Temp = [new OrionTemp(0)];
+var orionDevice2Hum = [new OrionHumidity(0)];
 
-let allData = {};
+var layout = {  width: 400, 
+                height: 300, 
+                paper_bgcolor:'rgba(0,0,0,0)', 
+                plot_bgcolor:'rgba(0,0,0,0)',
+                font: {color: "#333"},
+                transition: { duration: 500, easing: 'cubic-in-out' }
+                
+            };
 
-let svg = {};
+Plotly.newPlot('orion__device1__temp', orionDevice1Temp, layout, {displayModeBar: false, responsive: true});
+Plotly.newPlot('orion__device1__hum', orionDevice1Hum, layout, {displayModeBar: false});
+Plotly.newPlot('orion__device2__temp', orionDevice2Temp, layout, {displayModeBar: false});
+Plotly.newPlot('orion__device2__hum', orionDevice2Hum, layout, {displayModeBar: false});
 
 
-//get data from Orion every second
-function getData() {
-  //check if call is already in progress
+function updateCharts() {
   if (callInProgress) return;
   callInProgress = true;
+
   getOrionData();
-
-  //check if data is type of array
-
 
   if (!Array.isArray(data) || data.length == 0)
     return;
-
-  data.forEach(element => {
-    element.id = element.id.split(':')[2];
-
-    //let tempHumidity = new Date(element?.humidity?.metadata?.TimeInstant?.value);
-    //let tempTemperature = new Date(element?.temperature?.metadata?.TimeInstant?.value);
-    let tempHumidity = Date.now();
-    let tempTemperature = Date.now();
-    let humidity = element?.humidity?.value;
-    let temperature = element?.temperature?.value;
-
-    let device = new Device(element.id, humidity, temperature, tempHumidity, tempTemperature);
-
-    //check if element.id is key in allData
-    if (allData[element.id] != undefined) {
-      //keeps only the last 10 values
-      allData[element.id].push(device);
-      if (allData[element.id].length > 10) {
-        allData[element.id].shift();
-      }
-
+  
+  data.forEach(function (item) {
+    if (item.id.includes('001')) {
+      orionDevice1Temp[0].value = item.temperature.value;
+      orionDevice1Hum[0].value = item.humidity.value;
+      Plotly.react('orion__device1__temp', orionDevice1Temp, layout);
+      Plotly.react('orion__device1__hum', orionDevice1Hum, layout);
+      updateLastUpdate(lstUpdate1, item.TimeInstant?.value);
+      
     }
-    else {
-      allData[element.id] = [];
-      allData[element.id].push(device);
-
-      const div = document.createElement('div');
-      div.classList.add('container');
-      const h3 = document.createElement('h3');
-      h3.innerHTML = element.id;
-      const p = document.createElement('p');
-      p.innerHTML = 'Temperatura';
-      const divChart = document.createElement('div');
-      divChart.id = element.id;
-      div.appendChild(h3);
-      div.appendChild(p);
-      div.appendChild(divChart);
-      grid.appendChild(div);
-        
-      svg[element.id] = d3.select(`#${element.id}`)
-        .append('svg')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
-        .attr("class", "x label")
-        .append("g")
-        .attr('transform', `translate(${margin.left}, ${margin.top})`);
-
-      const divHumidity = document.createElement('div');
-      divHumidity.classList.add('container');
-      const h3Humidity = document.createElement('h3');
-      h3Humidity.innerHTML = element.id;
-      const pHumidity = document.createElement('p');
-      pHumidity.innerHTML = 'Umidade';
-      const divChartHumidity = document.createElement('div');
-      divChartHumidity.id = element.id + 'h';
-      divHumidity.appendChild(h3Humidity);
-      divHumidity.appendChild(pHumidity);
-      divHumidity.appendChild(divChartHumidity);
-      grid.appendChild(divHumidity);
-        
-
-
-      svg[element.id + 'h'] = d3.select(`#${element.id}h`)
-        .append('svg')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
-        .append("g")
-        .attr('transform', `translate(${margin.left}, ${margin.top})`);
-
+    if (item.id.includes('002')) {
+      orionDevice2Temp[0].value = item.temperature.value;
+      orionDevice2Hum[0].value = item.humidity.value;
+      Plotly.react('orion__device2__temp', orionDevice2Temp, layout);
+      Plotly.react('orion__device2__hum', orionDevice2Hum, layout);
+      updateLastUpdate(lstUpdate2, item.TimeInstant?.value);
     }
-    updateGraph();
   });
-
-  //console.log(JSON.stringify(allData));
-
-
 }
 
-setInterval(getData, 1000);
-
-
-
-
-
-function updateGraph() {
-  // Iterate over each element in the 'svg' object
-  console.log(allData);
-  for (let id in svg) {
-      let auxId = id;
-      if (id[id.length - 1] == 'h')
-        auxId = id.substring(0, id.length - 1);
-
-
-      // Remove the existing path
-      svg[id].selectAll("path").remove();
-      svg[id].selectAll("g").remove();
-
-      // Define the scales
-      const xScale = d3.scaleTime().range([0, width]);
-      const yScale = d3.scaleLinear().domain([0, 100]).range([height, 0]);
-      const line = d3.line();
-
-      // Set the domains of the scales
-      if (auxId == id) {
-        xScale.domain(d3.extent(allData[auxId], function(d) { return d.tempTemperature; }));
-        //yScale.domain([0, d3.max(allData[auxId], function(d) { return d.temperature; })]);
-        line.x(function(d) { return xScale(d.tempTemperature); }) // replace 'd.x' with your actual x-value
-        .y(function(d) { return yScale(d.temperature); }); // replace 'd.y' with your actual y-value
-      }
-      else {
-        xScale.domain(d3.extent(allData[auxId], function(d) { return d.tempHumidity; }));
-        //yScale.domain([0, d3.max(allData[auxId], function(d) { return d.humidity; })]);
-        line.x(function(d) { return xScale(d.tempHumidity); }) // replace 'd.x' with your actual x-value
-        .y(function(d) { return yScale(d.humidity); }); // replace 'd.y' with your actual y-value
-      }
-          
-
-      // Create the axis generators
-      const xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%H:%M:%S"));
-      const yAxis = d3.axisLeft(yScale);
-
-      if (auxId == id) {
-        svg[id].append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 0 - margin.left + 10)
-        .attr("x",0 - (height / 2) - 20)
-        .attr("dy", "0.5em")
-        .style("text-anchor", "middle")
-        .text("Temperatura");
-      }
-      else {
-        svg[id].append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 0 - margin.left + 10)
-        .attr("x",0 - (height / 2) - 20)
-        .attr("dy", "0.5em")
-        .style("text-anchor", "middle")
-        .text("Umidade");
-      }
-
-
-      // Append the x-axis to the SVG
-      svg[id].append("g")
-        .attr("transform", "translate(0," + height + ")")
-        .call(xAxis);
-
-      // Append the y-axis to the SVG
-      svg[id].append("g")
-        .call(yAxis);
-
-
-      
-
-      // Append the path and set the 'd' attribute
-      svg[id].append("path")
-          .datum(allData[auxId])
-          .attr("fill", "none")
-          .attr("stroke", "steelblue")
-          .attr("stroke-linejoin", "round")
-          .attr("stroke-linecap", "round")
-          .attr("stroke-width", 1.5)
-          .attr("d", line);
+function updateLastUpdate(lstUpdate, dateStr) {
+  if (dateStr) {
+    let date = new Date(dateStr);
+    if (date) {
+      let timeStr = date.toLocaleTimeString();
+      lstUpdate.innerHTML = 'Última atualização em: ' + timeStr;
+    }
   }
 }
 
-
+setInterval(updateCharts, 1000);
