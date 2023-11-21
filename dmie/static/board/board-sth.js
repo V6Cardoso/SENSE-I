@@ -6,6 +6,7 @@ var dateTo = document.querySelector('#dateTo');
 
 var sthcontainer = document.querySelector('#sth_comet_container');
 var formConstruct = document.getElementById('sth_comet_construct_plot');
+var plotTitle = document.getElementById('plotTitle');
 
 [lastN, hLimit, hOffset, dateFrom, dateTo].forEach(function(field) {
   field.addEventListener('input', checkFields);
@@ -111,6 +112,8 @@ function ungroupData(data) {
 
 
 function updateSthComet() {
+  if (plotTitle.value == '')
+    return;
   formConstruct.classList.add('hidden');
 
   var params = {};
