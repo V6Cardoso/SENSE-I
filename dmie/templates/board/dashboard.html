@@ -25,6 +25,23 @@
             }
         });
     }
+
+    let sthData;
+    function getSthData() {
+      event?.stopPropagation();
+      $.ajax({
+          url: '{{url_for("board.getSthCometData")}}',
+          type: 'POST',
+          data: $('#sth_comet_form').serialize(),
+          success: function (response) {
+            //console.log(JSON.stringify(response));
+            sthData = response;
+            formConstruct.classList.remove('hidden');
+          },
+          error: function (response) {   
+          }
+      });
+    }
   </script>
 {% endblock %}
 
@@ -36,14 +53,94 @@
 {% block content %}
   <div class="grid">
     <div class="container">
-      <h3>Dispositivo 1</h3>
+      <h3>Sensor ambiente</h3>
       <div id="orion__device1__temp" class="plotly"></div>
       <div id="orion__device1__hum" class="plotly"></div>
       <p id="orion__device1__last_update"  class="last__update">Última atualização em: </p>
     </div>
-    <div class="sth">STH-Comet dashboard</div>
+    <div id="sth_comet_container" class="sth">
+      <div class="forms">
+        <form id="sth_comet_form" onsubmit='return false'>
+          <div>
+            <label for="device">Dispositivo:</label>
+            <select id="device" name="device">
+              <option value="urn:ngsi-ld:dmie001">Sensor ambiente</option>
+              <option value="urn:ngsi-ld:dmie002">Estufa 1</option>
+            </select>
+          </div>
+  
+          <div>
+            <label for="attr">Parâmetro</label>
+            <select id="attr" name="attr">
+              <option value="temperature">Temperatura</option>
+              <option value="humidity">Umidade</option>
+            </select>
+          </div>
+  
+          <div>
+            <label for="lastN">Últimos N:</label>
+            <input type="number" id="lastN" name="lastN" value="100">
+          </div>
+          
+          <div>
+            <label for="hLimit">Limite H:</label>
+            <input type="number" id="hLimit" name="hLimit" value="15">
+          </div>
+          
+          <div>
+              <label for="hOffset">Deslocamento H:</label>
+            <input type="number" id="hOffset" name="hOffset" value="0">
+          </div>
+          
+          <div>
+              <label for="dateFrom">Data de:</label>
+            <input type="datetime-local" id="dateFrom" name="dateFrom">
+          </div>
+          
+          <div>
+              <label for="dateTo">Data até:</label>
+            <input type="datetime-local" id="dateTo" name="dateTo">
+          </div>
+          
+          <div>
+            <label for="submit">&nbsp;</label>
+            <input class="submit" type="submit" onclick="getSthData()" id="submit" value="Pesquisar">
+          </div>
+          
+        </form>
+  
+        <form id="sth_comet_construct_plot" class="hidden" onsubmit='return false'>
+          <div>
+            <label for="plotType">Tipo:</label>
+            <select id="plotType" name="plotType">
+              <option value="lines">Linha</option>
+              <option value="markers">Dispersão</option>
+              <option value="lines+markers">Linha e dispersão</option>
+            </select>
+          </div>
+          <div>
+            <label for="plotTitle">Título:</label>
+            <input type="text" id="plotTitle" name="plotTitle" required>
+          </div>
+          <div>
+            <label for="plotLineName">Nome da linha:</label>
+            <input type="text" id="plotLineName" name="plotLineName">
+          </div>
+          <div>
+            <label for="plotColor">Cor:</label>
+            <input type="color" name="plotColor" id="plotColor" value="#4781b4">
+          </div>
+          <div>
+            <label for="submit">&nbsp;</label>
+            <input class="submit" type="submit" onclick="updateSthComet()" title="Dica: para adicionar múltiplas linhas, use o mesmo título." value="criar / adicionar">
+          </div>
+        </form>
+      </div>
+      
+
+    </div>
     <div class="container">
-      <h3>Dispositivo 2</h3>
+      <h3>Estufa 1</h3>
       <div id="orion__device2__temp" class="plotly"></div>
       <div id="orion__device2__hum" class="plotly"></div>
       <p id="orion__device2__last_update" class="last__update">Última atualização em: </p>

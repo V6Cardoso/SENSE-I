@@ -41,6 +41,8 @@ def getOrionData():
     
     url = db.execute("SELECT url FROM server WHERE name = 'gcp'").fetchone()
     url = url['url']
+
+    url = url + ":1026/v2/entities"
     
     headers = {
         'fiware-service': 'smart',
@@ -48,8 +50,34 @@ def getOrionData():
         'Accept': 'application/json'
     }
     response = requests.request("GET", url, headers=headers)
-    #print(response)
     return response.json()
+
+@bp.route("/getSthCometData", methods=["POST"])
+@login_required
+def getSthCometData():
+    form = request.form
+    db = get_db()
+    
+    url = db.execute("SELECT url FROM server WHERE name = 'gcp'").fetchone()
+    url = url['url'] + ":8666/STH/v2/entities/" + form['device'] + '/attrs/' + form['attr']
+    
+    headers = {
+        'fiware-service': 'smart',
+        'fiware-servicepath': '/'
+    }
+
+    params = {
+        'type': 'estufa',
+        'lastN': int(form['lastN']) if form['lastN'] else None,
+        'hLimit': int(form['hLimit']) if form['hLimit'] else None,
+        'hOffset': int(form['hOffset']) if form['hOffset'] else None,
+        'dateFrom': form['dateFrom'] if form['dateFrom'] else None,
+        'dateTo': form['dateTo'] if form['dateTo'] else None
+    }
+    
+    response = requests.request("GET", url, headers=headers, params=params)
+    return response.json()
+    
     
 
 

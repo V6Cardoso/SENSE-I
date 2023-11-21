@@ -53,7 +53,7 @@ var layout = {  width: 400,
                 
             };
 
-Plotly.newPlot('orion__device1__temp', orionDevice1Temp, layout, {displayModeBar: false, responsive: true});
+Plotly.newPlot('orion__device1__temp', orionDevice1Temp, layout, {displayModeBar: false});
 Plotly.newPlot('orion__device1__hum', orionDevice1Hum, layout, {displayModeBar: false});
 Plotly.newPlot('orion__device2__temp', orionDevice2Temp, layout, {displayModeBar: false});
 Plotly.newPlot('orion__device2__hum', orionDevice2Hum, layout, {displayModeBar: false});

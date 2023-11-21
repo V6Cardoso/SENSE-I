@@ -16,7 +16,7 @@ body, html {
   box-sizing: border-box;
 }
 
-a {text-decoration: none;}
+a {text-decoration: none; color:#333}
 a:hover {color: inherit;}
 a:visited {color: inherit;}
 
