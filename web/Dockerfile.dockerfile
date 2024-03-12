@@ -24,4 +24,3 @@ CMD ["-m", "flask", "run", "--host=0.0.0.0"]
 
 #run with -> docker image build -t dmie -f Dockerfile.dockerfile .
 #run with -> docker run -p 5000:5000 -d dmie
-```
