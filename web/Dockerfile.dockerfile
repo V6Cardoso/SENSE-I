@@ -19,8 +19,9 @@ ENV FLASK_APP=dmie
 # configure the container to run in an executed manner
 ENTRYPOINT [ "python3" ]
 
+# initialize the database
+RUN flask --app dmie init-db
+
 CMD ["-m", "flask", "run", "--host=0.0.0.0"]
 #CMD ["flask", "--app", "dmie", "run"]
 
-#run with -> docker image build -t dmie -f Dockerfile.dockerfile .
-#run with -> docker run -p 5000:5000 -d dmie
