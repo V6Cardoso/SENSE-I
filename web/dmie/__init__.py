@@ -36,9 +36,8 @@ def create_app(test_config=None):
     db.init_app(app)
 
     # apply the blueprints to the app
-    from dmie import auth, blog, board
+    from dmie import board
 
-    app.register_blueprint(auth.bp)
     app.register_blueprint(board.bp)
     #app.register_blueprint(blog.bp)
 

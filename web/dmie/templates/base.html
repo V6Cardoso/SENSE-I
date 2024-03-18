@@ -8,33 +8,6 @@
   {% block head %}{% endblock %}
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
-
-<button class="open-button" onclick="toggleNav()">☰</button>
-<nav class="nav-container" id="navMenu">
-  <div class="close-button" onclick="toggleNav()">&times;</div>
-  <div class="nav-content">
-    <div class="nav-user-info">
-      {% if g.user %}
-        <img class="nav-user-info__img" src="{{ g.user['profile_image'] }}" alt="Profile Image">
-        <span>{{ g.user['username'] }}</span>
-        <br>
-        <a href="{{ url_for('auth.logout') }}">Sair</a>
-      {% else %}
-        <img class="nav-user-info__img" src="{{ url_for('static', filename='images/default_profile_image.png') }}" alt="Profile Image">
-        <a href="{{ url_for('auth.register') }}">Registre-se</a>
-        <a href="{{ url_for('auth.login') }}">Login</a>
-      {% endif %}
-    </div>
-    <div class="nav-links">
-      {% if g.user %}
-        <a href="{{ url_for('board.dashboard') }}" class="nav-links__item"><span>Início</span></a>
-      {% else %}
-        <a href="{{ url_for('board.index') }}" class="nav-links__item"><span>Início</span></a>
-      {% endif %}
-      <a href="{{ url_for('board.about') }}" class="nav-links__item"><span>Sobre</span></a>
-    </div>
-  </div>
-</nav>
 <section class="content">
   <header>
     <h1 class="title">{% block header %}{% endblock %}</h1>
@@ -43,5 +16,4 @@
 </section>
 
 <script src="{{ url_for('static', filename='script.js') }}"></script>
-<!-- <script src="{{ url_for('static', filename='pwa.js') }}"></script> -->
 {% block script %}{% endblock %}
