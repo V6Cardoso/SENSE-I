@@ -21,6 +21,19 @@ def index():
 def about():
     return render_template("board/about.html")
 
+@bp.route("/setIP", methods=["POST"])
+def setIP():
+    form = request.form
+    db = get_db()
+    #check if the server is already in the database
+    server = db.execute("SELECT * FROM server WHERE name = 'gcp'").fetchone()
+    if server is None:
+        db.execute("INSERT INTO server (name, url) VALUES ('gcp', ?)", (form['url'],))
+    else:
+        db.execute("UPDATE server SET url = ? WHERE name = 'gcp'", (form['url'],))
+    db.commit()
+    return "OK"
+
 
 
 @bp.route("/getOrionData", methods=["POST"])
