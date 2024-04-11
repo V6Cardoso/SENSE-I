@@ -1,12 +1,14 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, Pressable } from 'react-native';
 
 import EstufaComponent from '../components/estufa';
 import EstufaModal from '../components/estufaModal';
 
+import { getOrionData } from '../utils/fetchData';
+
 const EstufasScreen = () => {
-    const estufas = [{name: '2'}, {name: '2'}, {name: '2'}, {name: '2'},{name: '2'}, {name: '2'},{name: '2'}, {name: '2'}];
+    const [estufas, setEstufas] = useState([]);
     let [showModal, setShowModal] = useState(false);
 
     const closeModalHandler = () => {
@@ -16,6 +18,21 @@ const EstufasScreen = () => {
     const dispatchPressEvent = () => {
         setShowModal(true);
     }
+
+    useEffect(() => {
+        console.log('EstufasScreen mounted');
+        const interval = setInterval(() => {
+            fetchData();
+        }, 5000);
+        return () => clearInterval(interval);
+    }, []);
+
+    async function fetchData() {
+        let data = await getOrionData();
+        console.log("data -> " + JSON.stringify(data));
+        setEstufas(data);
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -26,7 +43,7 @@ const EstufasScreen = () => {
                 data={estufas}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({item}) =>
-                    <EstufaComponent name={item.name} onPress={dispatchPressEvent} />
+                    <EstufaComponent estufa={item} onPress={dispatchPressEvent} />
                 }
             />
             <EstufaModal title='Sensor Estufa 1' visible={showModal} onCancel={closeModalHandler}/>
