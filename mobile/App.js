@@ -15,29 +15,6 @@ import AboutScreen from './src/screens/AboutScreen';
 import HomeLogo from './src/assets/logos/home-icon.svg';
 import AboutLogo from './src/assets/logos/about-icon.svg';
 
-
-function MyTabs() {
-  return (
-    <Tab.Navigator
-      initialRouteName={'Estufas'}
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          if (route.name === 'Estufas') {
-            return <HomeLogo width={25} height={80} />;
-          } else if (route.name === 'About') {
-            return <AboutLogo width={25} height={80} />;
-          }
-        },
-      })}>
-
-
-      <Tab.Screen name="Estufas" component={EstufasScreen} />
-      <Tab.Screen name="About" component={AboutScreen} />
-      
-    </Tab.Navigator>
-  );
-}
-
 export default function App() {
   return (
     <>
