@@ -12,11 +12,11 @@ const EstufaComponent = (props) => {
             android_ripple={styles.ripple}
             onPress={props.onPress}>
 
-            <Text style={styles.text}>Estufa {props.name}</Text>
+            <Text style={styles.text}>Estufa {props.estufa.id}</Text>
             <View style={styles.infoContainer}>
                 <View style={styles.data}>
-                    <Text style={styles.text}>Temperatura: 25°C</Text>
-                    <Text style={styles.text}>Umidade: 50%</Text>
+                    <Text style={styles.text}>Temperatura: {props.estufa.temperature.value}°C</Text>
+                    <Text style={styles.text}>Umidade: {props.estufa.humidity.value}%</Text>
                 </View>
                 <Image source={FanemImage} style={{ width: 100, height: 100 }} />
             </View>

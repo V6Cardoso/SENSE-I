@@ -1,7 +1,15 @@
 import Config from "react-native-config";
 
 function getOrionData() {
-    return fetch(Config.OrionAPI_URL)
+    /* Config.TEST_URL  not working yet*/ 
+    return fetch("http://",{
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Fiware-Service': 'smart',
+            'Fiware-ServicePath': '/'
+        }
+    })
         .then(response => response.json())
         .then(data => {
         return data;
@@ -22,3 +30,5 @@ function getSthCometData(device, attr) {
         console.error(error);
         });
     };
+
+export { getOrionData, getSthCometData };
