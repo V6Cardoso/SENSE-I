@@ -11,6 +11,7 @@ const Stack = createNativeStackNavigator();
 
 import EstufasScreen from './src/screens/EstufasScreen';
 import AboutScreen from './src/screens/AboutScreen';
+import GraphScreen from './src/screens/GraphScreen';
 
 export default function App() {
   return (
@@ -23,6 +24,16 @@ export default function App() {
           options={{
             tabBarIcon: ({ color, size }) => (
               <Icon name="tablet-landscape-outline" color={color} size={size} />
+            ),
+            headerShown: false,
+          }}
+        />
+        <Tab.Screen 
+          name="Gráficos" 
+          component={GraphScreen} 
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="bar-chart-outline" color={color} size={size} />
             ),
             headerShown: false,
           }}
