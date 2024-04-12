@@ -49,13 +49,14 @@ const EstufasScreen = () => {
   }
 
   const estufasExtractor = (data) => {
-    return data.map((item) => {
+    return data?.map((item) => {
     return {
         id: item.id,
         type: item.type,
         name: item.id.substring(item.id.indexOf('dmie') + 4),
-        temperature: item.temperature.value,
+        temperature: item.temperature?.value,
         humidity: item.humidity?.value,
+        timestamp: new Date(item.TimeInstant?.value).toLocaleTimeString(),
     };
     });
   }
@@ -80,11 +81,6 @@ const EstufasScreen = () => {
           )}
         />
       )}
-      <EstufaModal
-        title="Sensor Estufa 1"
-        visible={showModal}
-        onCancel={closeModalHandler}
-      />
     </View>
   );
 };
