@@ -92,7 +92,7 @@ function updateLastUpdate(lstUpdate, dateStr) {
     let date = new Date(dateStr);
     if (date) {
       let timeStr = date.toLocaleTimeString();
-      lstUpdate.innerHTML = 'Última atualização em: ' + timeStr;
+      lstUpdate.innerHTML = 'Última atualização: ' + timeStr;
     }
   }
 }
