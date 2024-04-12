@@ -12,13 +12,16 @@ const EstufaComponent = (props) => {
             android_ripple={styles.ripple}
             onPress={props.onPress}>
 
-            <Text style={styles.text}>Estufa {props.estufa.id}</Text>
+            <Text style={styles.text}>Estufa {props.estufa.name}</Text>
             <View style={styles.infoContainer}>
                 <View style={styles.data}>
                     <Text style={styles.text}>Temperatura: {props.estufa.temperature}°C</Text>
                     <Text style={styles.text}>Umidade: {props.estufa.humidity}%</Text>
                 </View>
                 <Image source={FanemImage} style={{ width: 100, height: 100 }} />
+            </View>
+            <View style={styles.timestamp}>
+                <Text style={styles.timestampText}>Última atualização: {props.estufa.timestamp}</Text>
             </View>
         </Pressable>
     );
@@ -45,6 +48,16 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textAlign: 'center',
         margin: 10,
+    },
+    timestamp: {
+        width: '100%',
+    },
+    timestampText: {
+        fontSize: 15,
+        textAlign: 'left',
+        margin: 10,
+        color: 'gray',
+        
     },
     infoContainer: {
         flex: 1,
