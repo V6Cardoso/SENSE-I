@@ -15,8 +15,8 @@ const EstufaComponent = (props) => {
             <Text style={styles.text}>Estufa {props.estufa.id}</Text>
             <View style={styles.infoContainer}>
                 <View style={styles.data}>
-                    <Text style={styles.text}>Temperatura: {props.estufa.temperature.value}°C</Text>
-                    <Text style={styles.text}>Umidade: {props.estufa.humidity.value}%</Text>
+                    <Text style={styles.text}>Temperatura: {props.estufa.temperature}°C</Text>
+                    <Text style={styles.text}>Umidade: {props.estufa.humidity}%</Text>
                 </View>
                 <Image source={FanemImage} style={{ width: 100, height: 100 }} />
             </View>

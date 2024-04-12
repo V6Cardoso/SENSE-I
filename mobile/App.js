@@ -12,9 +12,6 @@ const Stack = createNativeStackNavigator();
 import EstufasScreen from './src/screens/EstufasScreen';
 import AboutScreen from './src/screens/AboutScreen';
 
-import HomeLogo from './src/assets/logos/home-icon.svg';
-import AboutLogo from './src/assets/logos/about-icon.svg';
-
 export default function App() {
   return (
     <>
