@@ -4,11 +4,13 @@ from flask import request
 from flask import current_app
 from werkzeug.exceptions import abort
 
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 
 import requests
 import json
-
-from dmie.db import get_db
 
 bp = Blueprint("board", __name__)
 
@@ -21,28 +23,13 @@ def index():
 def about():
     return render_template("board/about.html")
 
-@bp.route("/setIP", methods=["POST"])
-def setIP():
-    form = request.form
-    db = get_db()
-    #check if the server is already in the database
-    server = db.execute("SELECT * FROM server WHERE name = 'gcp'").fetchone()
-    if server is None:
-        db.execute("INSERT INTO server (name, url) VALUES ('gcp', ?)", (form['url'],))
-    else:
-        db.execute("UPDATE server SET url = ? WHERE name = 'gcp'", (form['url'],))
-    db.commit()
-    return "OK"
-
 
 
 @bp.route("/getOrionData", methods=["POST"])
 def getOrionData():
-
-    db = get_db()
-    
-    url = db.execute("SELECT url FROM server WHERE name = 'gcp'").fetchone()
-    url = url['url']
+    url = os.getenv('IP')
+    if url is None:
+        return "No env IP"
 
     url = url + ":1026/v2/entities"
     
@@ -57,10 +44,12 @@ def getOrionData():
 @bp.route("/getSthCometData", methods=["POST"])
 def getSthCometData():
     form = request.form
-    db = get_db()
     
-    url = db.execute("SELECT url FROM server WHERE name = 'gcp'").fetchone()
-    url = url['url'] + ":8666/STH/v2/entities/" + form['device'] + '/attrs/' + form['attr']
+    url = os.getenv('IP')
+    if url is None:
+        return "No env IP"
+    
+    url = url + ":8666/STH/v2/entities/" + form['device'] + '/attrs/' + form['attr']
     
     headers = {
         'fiware-service': 'smart',
