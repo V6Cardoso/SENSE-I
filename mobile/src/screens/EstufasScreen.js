@@ -1,6 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { View, Text, StyleSheet, FlatList, Pressable } from "react-native";
+import * as Progress from 'react-native-progress';
 
 import EstufaComponent from "../components/estufa";
 import EstufaModal from "../components/estufaModal";
@@ -67,7 +68,12 @@ const EstufasScreen = () => {
       <View style={styles.header}>
         <Text style={styles.text}>Estufas</Text>
       </View>
-      {isLoading && <Text>Loading...</Text>}
+      {isLoading &&
+        <>
+          <Progress.CircleSnail color={['#4682b4']} size={80} />
+          <Text style={{marginTop: 10}}>Carregando dados</Text>
+        </>
+      }
       {error && 
         <Text style={{color: 'red'}}>An error occurred while fetching data</Text>
       }
