@@ -70,13 +70,15 @@ const EstufasScreen = () => {
     <View style={styles.container}>
       <Text style={styles.header}>Estufas</Text>
       {isLoading && !error &&
-        <>
+        <View style={style.centeredContent}>
           <Progress.CircleSnail color={['#4682b4']} size={80} />
           <Text style={{marginTop: 10}}>Carregando dados</Text>
-        </>
+        </View>
       }
       {error && 
-        <Text style={{color: 'red'}}>Ocorrreu um erro ao carregar os dados</Text>
+        <View style={style.centeredContent}>
+          <Text style={{color: 'red'}}>Ocorrreu um erro ao carregar os dados</Text>
+        </View>
       }
       {estufas.length !== 0 && (
         <FlatList
@@ -93,28 +95,14 @@ const EstufasScreen = () => {
 };
 
 const style = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5FCFF",
-  },
-  header: {
-    width: "100%",
-    height: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5FCFF",
-    marginTop: 15,
-  },
-  text: {
-    fontSize: 20,
-    textAlign: "center",
-    margin: 10,
-  },
   list: {
     width: "100%",
     height: "100%",
+  },
+  centeredContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
