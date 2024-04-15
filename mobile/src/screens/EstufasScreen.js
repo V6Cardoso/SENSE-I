@@ -80,7 +80,7 @@ const EstufasScreen = () => {
           <Text style={{color: 'red'}}>Ocorrreu um erro ao carregar os dados</Text>
         </View>
       }
-      {estufas.length !== 0 && (
+      {estufas?.length !== 0 && (
         <FlatList
           style={style.list}
           data={estufas}

@@ -12,11 +12,11 @@ function getOrionData() {
     })
         .then(response => response.json())
         .then(data => {
-        return data;
+            return data;
         })
         .catch(error => {
-        console.error(error);
-        return;
+            console.error(error);
+            return error;
         });
     };
 
@@ -25,10 +25,11 @@ function getSthCometData(device, attr) {
     return fetch(endpoint)
         .then(response => response.json())
         .then(data => {
-        return data;
+            return data;
         })
         .catch(error => {
-        console.error(error);
+            console.error(error);
+            return error;
         });
     };
 
