@@ -1,15 +1,15 @@
 import React from 'react';
 import { useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { useState } from 'react';
-
+import Icon from "react-native-vector-icons/Ionicons";
 import styles from '../utils/styles';
 import ExperimentModal from '../components/ExperimentModal';
 
 import NotificationHandler from '../utils/NotificationHandler';
 
 
-import { getExperiments } from '../database/dbSenseI';
+import { getExperiments, deleteExperiment } from '../database/dbSenseI';
 
 import { connect } from "react-redux";
 import { setExperimentsList } from "../../context/actions/experimentActions";
@@ -37,10 +37,31 @@ const ExperimentsScreen = (props) => {
         try {
             data = await getExperiments();
             props.setExperimentsList(data);
-            console.log(props.experiments);
         } catch (error) {
             console.error(error);
         }
+    }
+
+    const alertRemoveExperiment = (id) => {
+        Alert.alert(
+            "Remover experimento",
+            "Deseja remover o experimento?",
+            [
+                {
+                    text: "Cancelar",
+                    style: "cancel"
+                },
+                {
+                    text: "Remover",
+                    onPress: () => removeExperiment(id)
+                }
+            ]
+        );
+    }
+
+    const removeExperiment = async (id) => {
+        await deleteExperiment(id);
+        fetchData();
     }
 
 
@@ -50,18 +71,27 @@ const ExperimentsScreen = (props) => {
             <Text style={styles.header}>Meus experimentos</Text>
             <FlatList
                 data={props.experiments}
-                keyExtractor={(item) => item.createdTimestamp.toString()}
+                keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
                     <View style={style.experimentItem}>
-                        <Text style={styles.text}>{item.name}</Text>
-                        <Text style={styles.text}>{item.incubator}</Text>
-                        <Text style={styles.text}>{item.temperature}</Text>
-                        <Text style={styles.text}>{item.humidity}</Text>
-                        <Text style={styles.text}>{item.startTimestamp}</Text>
-                        <Text style={styles.text}>{item.endTimestamp}</Text>
-                        <Text style={styles.text}>{item.createdTimestamp}</Text>
-                        <Text style={styles.text}>{item.status}</Text>
-                        <Text style={styles.text}>{item.observation}</Text>
+                        <View style={style.infoContainer}>
+                            <Text style={styles.text}>{item.name}</Text>
+                            <Text style={styles.text}>{item.incubator}</Text>
+                            <Text style={styles.text}>{item.temperature}</Text>
+                            <Text style={styles.text}>{item.humidity}</Text>
+                            <Text style={styles.text}>{item.startTimestamp}</Text>
+                            <Text style={styles.text}>{item.endTimestamp}</Text>
+                            <Text style={styles.text}>{item.createdTimestamp}</Text>
+                            <Text style={styles.text}>{item.status}</Text>
+                            <Text style={styles.text}>{item.observation}</Text>
+                        </View>
+                        
+                        <TouchableOpacity
+                            style={styles.buttonContainer}
+                            onPress={() => alertRemoveExperiment(item.id)}
+                        >
+                            <Icon name="trash" size={30} color="red" />
+                        </TouchableOpacity>
                     </View>
                 )}
                 style={{ width: '100%',}}
@@ -101,6 +131,15 @@ const style = StyleSheet.create({
         elevation: 5,
         borderRadius: 10,
         padding: 20,
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
+    infoContainer: {
+        
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
 });
 

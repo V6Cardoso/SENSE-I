@@ -74,9 +74,8 @@ const ExperimentModal = (props) => {
             createdTimestamp: Math.floor(new Date().getTime() / 1000),
             observation: observation,
         };
-        console.log(JSON.stringify(experiment));
-        await insertExperiment(experiment);
-        props.addToExperiments(experiment);
+        const result = await insertExperiment(experiment);
+        props.addToExperiments({id: result.insertId, ...experiment});
         props.onSubmit();
     }
 
