@@ -4,6 +4,8 @@ from flask import request
 from flask import current_app
 from werkzeug.exceptions import abort
 
+from .notificationHandler import send_push_message
+
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -23,6 +25,9 @@ def index():
 def about():
     return render_template("board/about.html")
 
+@bp.route("/pushNotification", methods=["POST"])
+def pushNotification():
+    return send_push_message(token=request.form['token'], title=request.form['title'], message=request.form['message'])
 
 
 @bp.route("/getOrionData", methods=["POST"])
