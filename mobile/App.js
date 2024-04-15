@@ -6,6 +6,9 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons'; 
 
+import store from "./context/store";
+import { Provider } from "react-redux";
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -34,7 +37,7 @@ export default function App() {
 
 
   return (
-    <>
+    <Provider store={store}>
       <NavigationContainer>
       <Tab.Navigator>
         <Tab.Screen 
@@ -71,7 +74,7 @@ export default function App() {
       </Tab.Navigator>
     </NavigationContainer>
     <StatusBar style="auto" />
-    </>
+    </Provider>
   );
 }
 

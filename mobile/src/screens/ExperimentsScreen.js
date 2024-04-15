@@ -11,9 +11,11 @@ import NotificationHandler from '../utils/NotificationHandler';
 
 import { getExperiments } from '../database/dbSenseI';
 
+import { connect } from "react-redux";
+import { setExperimentsList } from "../../context/actions/experimentActions";
 
-const ExperimentsScreen = () => {
-    const [experiments, setExperiments] = useState([]);
+
+const ExperimentsScreen = (props) => {
 
     const [showCreateModal, setShowCreateModal] = useState(false);
 
@@ -34,8 +36,8 @@ const ExperimentsScreen = () => {
         let data;
         try {
             data = await getExperiments();
-            setExperiments(data);
-            console.log(data);
+            props.setExperimentsList(data);
+            console.log(props.experiments);
         } catch (error) {
             console.error(error);
         }
@@ -47,8 +49,8 @@ const ExperimentsScreen = () => {
         <View style={styles.container}>
             <Text style={styles.header}>Meus experimentos</Text>
             <FlatList
-                data={experiments}
-                keyExtractor={(item) => item.id.toString()}
+                data={props.experiments}
+                keyExtractor={(item) => item.createdTimestamp.toString()}
                 renderItem={({ item }) => (
                     <View style={style.experimentItem}>
                         <Text style={styles.text}>{item.name}</Text>
@@ -102,4 +104,16 @@ const style = StyleSheet.create({
     },
 });
 
-export default ExperimentsScreen;
+const mapStateToProps = (state) => {
+    return {
+        experiments: state.experiments.experiments,
+    };
+  };
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setExperimentsList: (experiments) => dispatch(setExperimentsList(experiments)),
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ExperimentsScreen);

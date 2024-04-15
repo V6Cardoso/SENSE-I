@@ -17,6 +17,8 @@ import styles from '../utils/styles';
 import CustomModal from './CustomModal';
 
 import { insertExperiment } from '../database/dbSenseI';
+import { connect } from "react-redux";
+import { addToExperiments } from "../../context/actions/experimentActions";
 
 const ExperimentModal = (props) => {
     const [name, setName] = useState('');
@@ -74,6 +76,7 @@ const ExperimentModal = (props) => {
         };
         console.log(JSON.stringify(experiment));
         await insertExperiment(experiment);
+        props.addToExperiments(experiment);
         props.onSubmit();
     }
 
@@ -292,4 +295,16 @@ const style = StyleSheet.create({
     
 });
 
-export default ExperimentModal;
+const mapStateToProps = (state) => {
+    return {
+        experiments: state.experiments.experiments,
+    };
+  };
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        addToExperiments: (experiments) => dispatch(addToExperiments(experiments)),
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ExperimentModal);
