@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 import { View, Text, StyleSheet, FlatList, Pressable } from "react-native";
 import * as Progress from 'react-native-progress';
 
+import styles from '../utils/styles';
 import EstufaComponent from "../components/estufa";
-import EstufaModal from "../components/estufaModal";
 
 import { getOrionData } from "../utils/fetchData";
 
@@ -65,21 +65,19 @@ const EstufasScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.text}>Estufas</Text>
-      </View>
-      {isLoading &&
+      <Text style={styles.header}>Estufas</Text>
+      {isLoading && !error &&
         <>
           <Progress.CircleSnail color={['#4682b4']} size={80} />
           <Text style={{marginTop: 10}}>Carregando dados</Text>
         </>
       }
       {error && 
-        <Text style={{color: 'red'}}>An error occurred while fetching data</Text>
+        <Text style={{color: 'red'}}>Ocorrreu um erro ao carregar os dados</Text>
       }
       {estufas.length !== 0 && (
         <FlatList
-          style={styles.list}
+          style={style.list}
           data={estufas}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
@@ -91,7 +89,7 @@ const EstufasScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const style = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",

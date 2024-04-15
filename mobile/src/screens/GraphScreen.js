@@ -8,6 +8,15 @@ import {
   Button,
   Switch,
 } from "react-native";
+
+import {
+  LineChart,
+  BarChart,
+  PieChart,
+  ProgressChart,
+  ContributionGraph,
+  StackedBarChart
+} from "react-native-chart-kit";
 import DropDownPicker from "react-native-dropdown-picker";
 
 import { getOrionData } from "../utils/fetchData";
