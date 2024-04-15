@@ -1,5 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button } from 'react-native';
+import { useEffect } from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -10,10 +11,28 @@ const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 import EstufasScreen from './src/screens/EstufasScreen';
-import AboutScreen from './src/screens/AboutScreen';
 import GraphScreen from './src/screens/GraphScreen';
+import ExperimentsScreen from './src/screens/ExperimentsScreen';
+
+import { createTables } from "./src/database/dbSenseI";
 
 export default function App() {
+
+  let tabelasCriadas = false;
+
+  async function createTablesHandler() {
+    if (!tabelasCriadas) {
+      await createTables();
+      tabelasCriadas = true;
+    }
+  }
+
+  useEffect(() => {
+    createTablesHandler();
+  }, []);
+
+
+
   return (
     <>
       <NavigationContainer>
@@ -39,18 +58,19 @@ export default function App() {
           }}
         />
         <Tab.Screen 
-          name="Sobre" 
-          component={AboutScreen} 
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <Icon name="information-circle-outline" color={color} size={size} />
-            ),
-            headerShown: false,
-          }}
-        />
+        name="Meus experimentos"
+        component={ExperimentsScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="flask-outline" color={color} size={size} />
+          ),
+          headerShown: false,
+        }}
+
+      />
       </Tab.Navigator>
     </NavigationContainer>
-      <StatusBar style="auto" />
+    <StatusBar style="auto" />
     </>
   );
 }
