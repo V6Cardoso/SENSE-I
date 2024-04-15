@@ -38,7 +38,7 @@ const EstufasScreen = () => {
     getOrionData()
       .then((response) => {
         data = response;
-        let estufas = estufasExtractor(data).filter((item) => item.type === "estufa");
+        let estufas = estufasExtractor(data)?.filter((item) => item.type === "estufa");
         setEstufas(estufas);
         setLoading(false);
         setError(false);
@@ -50,7 +50,10 @@ const EstufasScreen = () => {
   }
 
   const estufasExtractor = (data) => {
-    return data?.map((item) => {
+    if(!data)
+      return;
+
+    return data.map((item) => {
     return {
         id: item.id,
         type: item.type,

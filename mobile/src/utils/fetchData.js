@@ -2,7 +2,7 @@ import Config from "react-native-config";
 
 function getOrionData() {
     /* Config.TEST_URL  not working yet*/ 
-    return fetch("http://",{
+    return fetch("",{
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -16,6 +16,7 @@ function getOrionData() {
         })
         .catch(error => {
         console.error(error);
+        return;
         });
     };
 
