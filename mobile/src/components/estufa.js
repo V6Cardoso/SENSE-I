@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 import { useState } from 'react';
 
-import FanemImage from '../assets/images/502-C.jpg';
+import FanemImage from '../assets/images/502-C sketch.png';
 
 const EstufaComponent = (props) => {
 
@@ -18,7 +18,7 @@ const EstufaComponent = (props) => {
                     <Text style={styles.text}>Temperatura: {props.estufa.temperature}°C</Text>
                     <Text style={styles.text}>Umidade: {props.estufa.humidity}%</Text>
                 </View>
-                <Image source={FanemImage} style={{ width: 100, height: 100 }} />
+                <Image source={FanemImage} style={{ resizeMode: 'contain', flex: 1, margin: 10, maxHeight: 120 }} />
             </View>
             <View style={styles.timestamp}>
                 <Text style={styles.timestampText}>Última atualização: {props.estufa.timestamp}</Text>
