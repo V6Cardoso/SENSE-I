@@ -1,5 +1,44 @@
 import Config from "react-native-config";
 
+function sendToken(token) {
+    const urlEncodedData = `pushToken=${encodeURIComponent(token)}`;
+    return fetch("", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: urlEncodedData
+    })
+        .then(response => response.json())
+        .then(response => {
+            return response;
+        })
+        .catch(error => {
+            console.error(error);
+            return error;
+        }
+    );
+};
+
+function sendExperiment(experiment) {
+    return fetch(Config.EXPERIMENT_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(experiment)
+    })
+        .then(response => response.json())
+        .then(response => {
+            return response;
+        })
+        .catch(error => {
+            console.error(error);
+            return error;
+        }
+    );
+};
+
 function getOrionData() {
     /* Config.TEST_URL  not working yet*/ 
     return fetch("",{
@@ -33,4 +72,4 @@ function getSthCometData(device, attr) {
         });
     };
 
-export { getOrionData, getSthCometData };
+export { getOrionData, getSthCometData, sendToken, sendExperiment};

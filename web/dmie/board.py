@@ -32,6 +32,19 @@ def pushNotification():
     return send_push_message(token=request.form['token'], title=request.form['title'], message=request.form['message'])
 
 
+@bp.route("/addDevice", methods=["POST"])
+def addDevice():
+    form = request.form
+    db = get_db()
+    db.execute(
+        "INSERT INTO devices (pushToken) VALUES (?)",
+        (form['pushToken'],)
+    )
+    db.commit()
+    return "Device added"
+
+
+
 @bp.route("/addExperiment", methods=["POST"])
 def addExperiment():
     form = request.form
