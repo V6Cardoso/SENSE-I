@@ -4,6 +4,10 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { sendToken } from "../utils/fetchData";
+
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -95,7 +99,10 @@ export default function NotificationHandler() {
 
   useEffect(() => {
     registerForPushNotificationsAsync()
-      .then((token) => setExpoPushToken(token ?? ''))
+      .then((token) => {
+        setExpoPushToken(token ?? '');
+        handleSendToken(token);
+      })
       .catch((error: any) => setExpoPushToken(`${error}`));
 
     notificationListener.current =
@@ -117,6 +124,17 @@ export default function NotificationHandler() {
         Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
+
+  async function handleSendToken(token: string) {
+    const tokenWasSet = await AsyncStorage.getItem('sentToken');
+    if (!tokenWasSet || !token)
+      return;
+    
+    sendToken(token).then((res) => {
+      console.log(res);
+      AsyncStorage.setItem('sentToken', 'true');
+    });
+  }
 
   /* return (
     <View
