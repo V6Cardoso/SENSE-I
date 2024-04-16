@@ -9,6 +9,7 @@ export async function createTables() {
   return new Promise((resolve, reject) => {
     const query = `CREATE TABLE IF NOT EXISTS Experiments (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                serverId INTEGER,
                 name TEXT,
                 incubator TEXT,
                 temperature REAL,
@@ -60,6 +61,7 @@ export async function getExperiments() {
 export async function insertExperiment(experiment) {
   return new Promise((resolve, reject) => {
     const query = `INSERT INTO Experiments (
+                serverId,
                 name,
                 incubator,
                 temperature,
@@ -72,7 +74,7 @@ export async function insertExperiment(experiment) {
                 endTimestamp,
                 createdTimestamp,
                 observation
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     let dbCx = getDbConnection();
 
@@ -81,6 +83,7 @@ export async function insertExperiment(experiment) {
         tx.executeSql(
           query,
           [
+            experiment.serverId,
             experiment.name,
             experiment.incubator,
             experiment.temperature,
@@ -110,6 +113,7 @@ export async function insertExperiment(experiment) {
 export async function updateExperiment(experiment) {
   return new Promise((resolve, reject) => {
     const query = `UPDATE Experiments SET
+                serverId = ?,
                 name = ?,
                 incubator = ?,
                 temperature = ?,
@@ -131,6 +135,7 @@ export async function updateExperiment(experiment) {
         tx.executeSql(
           query,
           [
+            experiment.serverId,
             experiment.name,
             experiment.incubator,
             experiment.temperature,
