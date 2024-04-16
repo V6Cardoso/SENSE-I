@@ -22,6 +22,9 @@ ENV FLASK_APP=dmie
 # configure the container to run in an executed manner
 ENTRYPOINT [ "python3" ]
 
+# initialize the database
+RUN flask --app dmie init-db
+
 CMD ["-m", "flask", "run", "--host=0.0.0.0"]
 #CMD ["flask", "--app", "dmie", "run"]
 

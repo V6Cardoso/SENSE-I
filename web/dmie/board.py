@@ -10,6 +10,8 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
+from dmie.db import get_db
+
 
 import requests
 import json
@@ -28,6 +30,53 @@ def about():
 @bp.route("/pushNotification", methods=["POST"])
 def pushNotification():
     return send_push_message(token=request.form['token'], title=request.form['title'], message=request.form['message'])
+
+
+@bp.route("/addExperiment", methods=["POST"])
+def addExperiment():
+    form = request.form
+    db = get_db()
+    db.execute(
+        "INSERT INTO experiments (name, incubator, temperature, temperatureLowThreshold, temperatureHighThreshold, humidity, humidityLowThreshold, humidityHighThreshold, startTimestamp, endTimestamp, createdTimestamp, observation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        (form['name'], form['incubator'], form['temperature'], form['temperatureLowThreshold'], form['temperatureHighThreshold'], form['humidity'], form['humidityLowThreshold'], form['humidityHighThreshold'], form['startTimestamp'], form['endTimestamp'], form['createdTimestamp'], form['observation'])
+    )
+    db.commit()
+    return "Experiment added"
+
+@bp.route("/getExperiments", methods=["POST"])
+def getExperiments():
+    db = get_db()
+    experiments = db.execute("SELECT * FROM experiments").fetchall()
+    return json.dumps(experiments)
+
+@bp.route("/deleteExperiment", methods=["POST"])
+def deleteExperiment():
+    form = request.form
+    db = get_db()
+    db.execute("DELETE FROM experiments WHERE id = ?", (form['id'],))
+    db.commit()
+    return "Experiment deleted"
+
+
+@bp.route("/getDevices", methods=["POST"])
+def getDevices():
+    url = os.getenv('IP')
+    if url is None:
+        return "No env IP"
+
+    url = url + ":4041/iot/devices"
+    
+    headers = {
+        'fiware-service': 'smart',
+        'fiware-servicepath': '/'
+    }
+    response = requests.request("GET", url, headers=headers)
+    if response.status_code == 200:
+        data = response.json()
+        devices = [{"device_id": device["device_id"], "entity_name": device["entity_name"]} for device in data["devices"]]
+        return devices
+    else:
+        return "Error: " + response.reason
 
 
 @bp.route("/getOrionData", methods=["POST"])
