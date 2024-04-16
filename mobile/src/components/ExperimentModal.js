@@ -70,7 +70,6 @@ const ExperimentModal = (props) => {
                 endTimestamp.getMinutes(),
                 endTimestamp.getSeconds()
             ).getTime() / 1000),
-            status: 'active',
             createdTimestamp: Math.floor(new Date().getTime() / 1000),
             observation: observation,
         };

@@ -82,7 +82,6 @@ const ExperimentsScreen = (props) => {
                             <Text style={styles.text}>{item.startTimestamp}</Text>
                             <Text style={styles.text}>{item.endTimestamp}</Text>
                             <Text style={styles.text}>{item.createdTimestamp}</Text>
-                            <Text style={styles.text}>{item.status}</Text>
                             <Text style={styles.text}>{item.observation}</Text>
                         </View>
                         

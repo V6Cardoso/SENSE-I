@@ -19,7 +19,6 @@ export async function createTables() {
                 humidityHighThreshold REAL,
                 startTimestamp INTEGER,
                 endTimestamp INTEGER,
-                status TEXT,
                 createdTimestamp INTEGER,
                 observation TEXT
           )`;
@@ -71,10 +70,9 @@ export async function insertExperiment(experiment) {
                 humidityHighThreshold,
                 startTimestamp,
                 endTimestamp,
-                status,
                 createdTimestamp,
                 observation
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     let dbCx = getDbConnection();
 
@@ -93,7 +91,6 @@ export async function insertExperiment(experiment) {
             experiment.humidityHighThreshold,
             experiment.startTimestamp,
             experiment.endTimestamp,
-            experiment.status,
             experiment.createdTimestamp,
             experiment.observation,
           ],
@@ -123,7 +120,6 @@ export async function updateExperiment(experiment) {
                 humidityHighThreshold = ?,
                 startTimestamp = ?,
                 endTimestamp = ?,
-                status = ?,
                 createdTimestamp = ?,
                 observation = ?
                 WHERE id = ?`;
@@ -145,7 +141,6 @@ export async function updateExperiment(experiment) {
             experiment.humidityHighThreshold,
             experiment.startTimestamp,
             experiment.endTimestamp,
-            experiment.status,
             experiment.createdTimestamp,
             experiment.observation,
             experiment.id,
