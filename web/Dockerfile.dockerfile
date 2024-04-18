@@ -10,11 +10,11 @@ WORKDIR /app
 # install the dependencies and packages in the requirements file
 RUN pip install -r requirements.txt
 
-#create .env with IP variable inside dmie
-RUN echo "IP=YOUR_FIWARE_IP_ADDRESS" > dmie/.env
-
 # copy every content from the local file to the image
 COPY . /app
+
+#create .env with IP variable inside dmie
+RUN echo "IP=YOUR_FIWARE_IP_ADDRESS" > /app/dmie/.env
 
 # set the FLASK_APP environment variable
 ENV FLASK_APP=dmie
