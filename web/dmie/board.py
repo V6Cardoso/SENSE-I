@@ -36,10 +36,18 @@ def pushNotification():
 def addDevice():
     form = request.form
     db = get_db()
-    db.execute(
-        "INSERT INTO devices (pushToken) VALUES (?)",
+    existing_device = db.execute(
+        "SELECT * FROM devices WHERE pushToken = ?",
         (form['pushToken'],)
-    )
+    ).fetchone()
+
+    if existing_device is None:
+        db.execute(
+            "INSERT INTO devices (pushToken) VALUES (?)",
+            (form['pushToken'],)
+        )
+    else:
+        return "Device with this pushToken already exists"
     db.commit()
     return "Device added"
 
@@ -71,7 +79,7 @@ def deleteExperiment():
     return "Experiment deleted"
 
 
-@bp.route("/getDevices", methods=["POST"])
+@bp.route("/getDevices")
 def getDevices():
     url = os.getenv('IP')
     if url is None:

@@ -127,7 +127,7 @@ export default function NotificationHandler() {
 
   async function handleSendToken(token: string) {
     const tokenWasSet = await AsyncStorage.getItem('sentToken');
-    if (!tokenWasSet || !token)
+    if (tokenWasSet || !token)
       return;
     
     sendToken(token).then((res) => {
