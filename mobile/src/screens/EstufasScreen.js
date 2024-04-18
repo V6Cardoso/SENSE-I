@@ -6,9 +6,12 @@ import * as Progress from 'react-native-progress';
 import styles from '../utils/styles';
 import EstufaComponent from "../components/estufa";
 
-import { getOrionData } from "../utils/fetchData";
+import { getDevices, getOrionData } from "../utils/fetchData";
 
-const EstufasScreen = () => {
+import { connect } from "react-redux";
+import { setDevicesList } from "../../context/actions/deviceActions";
+
+const EstufasScreen = (props) => {
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
@@ -26,11 +29,17 @@ const EstufasScreen = () => {
   useEffect(() => {
     console.log("EstufasScreen mounted");
     setLoading(true);
+    fetchDevices();
     fetchData();
     const interval = setInterval(() => {
       fetchData();
     }, 5000);
   }, []);
+
+  async function fetchDevices() {
+    let data = await getDevices();
+    props.setDevices(data);
+  }
 
   function fetchData() {
     let data;
@@ -106,4 +115,16 @@ const style = StyleSheet.create({
   },
 });
 
-export default EstufasScreen;
+const mapStateToProps = (state) => {
+  return {
+    devices: state.devices.devices,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setDevices: (devices) => dispatch(setDevicesList(devices)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(EstufasScreen);

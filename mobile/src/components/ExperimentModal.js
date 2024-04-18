@@ -23,7 +23,7 @@ import { addToExperiments } from "../../context/actions/experimentActions";
 const ExperimentModal = (props) => {
     const [name, setName] = useState('');
     const [incubator, setIncubator] = useState('');
-    const [incubators, setIncubators] = useState([{label: 'Estufa 1', value: 'estufa1'}, {label: 'Estufa 2', value: 'estufa2'}]); 
+    const [incubators, setIncubators] = useState(props.devices.map((device) => ({label: "Estufa " + device.device_id.substring(device.device_id.indexOf('dmie') + 4), value: device.device_id})));
     const [temperature, setTemperature] = useState(null);
     const [temperatureLowThreshold, setTemperatureLowThreshold] = useState(null);
     const [temperatureHighThreshold, setTemperatureHighThreshold] = useState(null);
@@ -296,6 +296,7 @@ const style = StyleSheet.create({
 const mapStateToProps = (state) => {
     return {
         experiments: state.experiments.experiments,
+        devices: state.devices.devices,
     };
   };
 
