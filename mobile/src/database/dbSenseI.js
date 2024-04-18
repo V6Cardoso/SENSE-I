@@ -110,54 +110,35 @@ export async function insertExperiment(experiment) {
   });
 }
 
-export async function updateExperiment(experiment) {
+export async function updateExperiment(id, fieldsToUpdate) {
   return new Promise((resolve, reject) => {
-    const query = `UPDATE Experiments SET
-                serverId = ?,
-                name = ?,
-                incubator = ?,
-                temperature = ?,
-                temperatureLowThreshold = ?,
-                temperatureHighThreshold = ?,
-                humidity = ?,
-                humidityLowThreshold = ?,
-                humidityHighThreshold = ?,
-                startTimestamp = ?,
-                endTimestamp = ?,
-                createdTimestamp = ?,
-                observation = ?
-                WHERE id = ?`;
+    let query = `UPDATE Experiments SET `;
+    let values = [];
+    for (let key in fieldsToUpdate) {
+      query += `${key} = ?, `;
+      values.push(fieldsToUpdate[key]);
+    }
+    query = query.slice(0, -2); // remove last comma and space
+    query += ` WHERE id = ?`;
+    values.push(id);
 
     let dbCx = getDbConnection();
-
+    console.log("query -> " + query);
+    console.log("values -> " + JSON.stringify(values));
     dbCx.transaction(
       (tx) => {
         tx.executeSql(
           query,
-          [
-            experiment.serverId,
-            experiment.name,
-            experiment.incubator,
-            experiment.temperature,
-            experiment.temperatureLowThreshold,
-            experiment.temperatureHighThreshold,
-            experiment.humidity,
-            experiment.humidityLowThreshold,
-            experiment.humidityHighThreshold,
-            experiment.startTimestamp,
-            experiment.endTimestamp,
-            experiment.createdTimestamp,
-            experiment.observation,
-            experiment.id,
-          ],
+          values,
           (_, result) => {
+            console.log("update result -> " + JSON.stringify(result));
             resolve(result);
+          },
+          (error) => {
+            console.log("update error -> " + JSON.stringify(error));
+            reject(error);
           }
         );
-      },
-      (error) => {
-        console.log(error);
-        reject(error);
       }
     );
   });
