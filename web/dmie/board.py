@@ -55,14 +55,15 @@ def addDevice():
 
 @bp.route("/addExperiment", methods=["POST"])
 def addExperiment():
-    form = request.form
+    data = request.get_json()
+    print(data)
     db = get_db()
-    db.execute(
+    cursor = db.execute(
         "INSERT INTO experiments (name, incubator, temperature, temperatureLowThreshold, temperatureHighThreshold, humidity, humidityLowThreshold, humidityHighThreshold, startTimestamp, endTimestamp, createdTimestamp, observation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        (form['name'], form['incubator'], form['temperature'], form['temperatureLowThreshold'], form['temperatureHighThreshold'], form['humidity'], form['humidityLowThreshold'], form['humidityHighThreshold'], form['startTimestamp'], form['endTimestamp'], form['createdTimestamp'], form['observation'])
+        (data.get('name'), data.get('incubator'), data.get('temperature'), data.get('temperatureLowThreshold'), data.get('temperatureHighThreshold'), data.get('humidity'), data.get('humidityLowThreshold'), data.get('humidityHighThreshold'), data.get('startTimestamp'), data.get('endTimestamp'), data.get('createdTimestamp'), data.get('observation'))
     )
     db.commit()
-    return "Experiment added"
+    return str(cursor.lastrowid)
 
 @bp.route("/getExperiments", methods=["POST"])
 def getExperiments():
