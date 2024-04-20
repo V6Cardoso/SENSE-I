@@ -3,6 +3,22 @@ import requests
 from requests.exceptions import ConnectionError, HTTPError
 
 def send_push_message(token, title, message):
+    tokens = []
+
+    if isinstance(token, list):
+        if len(token) > 50:
+            for i in range(0, len(token), 50):
+                tokens.append(token[i:i+50])
+        else:
+            tokens = token
+    else:
+        tokens = [token]
+
+    for token in tokens:
+        send_push_message_chunk(token, title, message)
+
+def send_push_message_chunk(token, title, message):
+
     message = {
         'to': token,
         'title': title,
