@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, Pressable, TextInput, ScrollView, TouchableOpacity } from 'react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   LineChart,
   BarChart,
@@ -23,7 +23,7 @@ import { addToExperiments } from "../../context/actions/experimentActions";
 const ExperimentModal = (props) => {
     const [name, setName] = useState('');
     const [incubator, setIncubator] = useState('');
-    const [incubators, setIncubators] = useState(props.devices.map((device) => ({label: "Estufa " + device.device_id.substring(device.device_id.indexOf('dmie') + 4), value: device.device_id})));
+    const [incubators, setIncubators] = useState([]);
     const [temperature, setTemperature] = useState(null);
     const [temperatureLowThreshold, setTemperatureLowThreshold] = useState(null);
     const [temperatureHighThreshold, setTemperatureHighThreshold] = useState(null);
@@ -42,6 +42,13 @@ const ExperimentModal = (props) => {
     const [openEndDatePicker, setOpenEndDatePicker] = useState(false);
     
     const [openPicker, setOpenPicker] = useState(false);
+
+    useEffect(() => {
+        if (!Array.isArray(props.devices))
+            return;
+        
+        setIncubators(props.devices.map((device) => ({label: "Estufa " + device.device_id.substring(device.device_id.indexOf('dmie') + 4), value: device.entity_name})));
+    }, [props.devices]);
 
 
     const submitHandler = async () => {
