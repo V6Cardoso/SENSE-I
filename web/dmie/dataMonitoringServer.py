@@ -1,0 +1,64 @@
+import os
+import requests
+from requests.exceptions import ConnectionError, HTTPError
+import time
+from datetime import datetime, timedelta
+import dateutil.parser
+
+from dmie.db import get_db
+
+import time
+
+
+def get_current_incubators():
+    current_time = int(time.time())
+    db = get_db()
+    return db.execute(
+        "SELECT DISTINCT incubator FROM experiments WHERE startTimestamp < ? AND endTimestamp > ?",
+        (current_time, current_time)
+    ).fetchall()
+
+
+def check_experiments(orion_data):
+
+    active_incubators = get_current_incubators()
+    print(active_incubators)
+
+    for incubator in active_incubators:
+        incubator = incubator['incubator']
+
+        for item in orion_data:
+            if item['id'] == incubator:
+                time_instant = dateutil.parser.parse(item['TimeInstant']['value'])
+                time_instant_timestamp = time_instant.timestamp()
+                current_timestamp = time.time()
+
+                if current_timestamp - time_instant_timestamp > 5 * 60:
+                    print(f'TimeInstant for {incubator} was published more than 5 minutes ago.')
+                    push_tokens = get_affected_devices_push_tokens(incubator)
+                    
+
+def get_affected_devices_push_tokens(incubator):
+    db = get_db()
+    push_tokens = db.execute(
+        """
+        SELECT devices.pushToken
+        FROM experiments
+        JOIN device_experiments ON experiments.id = device_experiments.experiment_id
+        JOIN devices ON device_experiments.device_id = devices.id
+        WHERE experiments.incubator = ?
+        """,
+        (incubator,)
+    ).fetchall()
+
+    return push_tokens
+
+
+        
+        
+
+
+    
+
+
+

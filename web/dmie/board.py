@@ -5,6 +5,7 @@ from flask import current_app
 from werkzeug.exceptions import abort
 
 from .notificationHandler import send_push_message
+from .dataMonitoringServer import check_experiments
 
 import os
 from dotenv import load_dotenv
@@ -15,6 +16,7 @@ from dmie.db import get_db
 
 import requests
 import json
+from apscheduler.schedulers.background import BackgroundScheduler
 
 bp = Blueprint("board", __name__)
 
@@ -151,5 +153,15 @@ def getSthCometData():
 @bp.route('/service-worker.js', methods=['GET'])
 def sw():
     return current_app.send_static_file('service-worker.js')
+
+def job():
+    orion_data = getOrionData()
+    check_experiments(orion_data)
+
+    return "Job done"
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(job, 'interval', minutes=5)
+scheduler.start()
 
 
