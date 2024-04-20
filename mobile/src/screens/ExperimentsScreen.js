@@ -8,8 +8,8 @@ import ExperimentModal from '../components/ExperimentModal';
 
 import NotificationHandler from '../utils/NotificationHandler';
 
-
-import { getExperiments, deleteExperiment } from '../database/dbSenseI';
+import { sendExperiment } from '../utils/fetchData';
+import { getExperiments, deleteExperiment, updateExperiment } from '../database/dbSenseI';
 
 import { connect } from "react-redux";
 import { setExperimentsList } from "../../context/actions/experimentActions";
@@ -41,6 +41,38 @@ const ExperimentsScreen = (props) => {
             console.error(error);
         }
     }
+
+    const alertUploadExperiment = (experiment) => {
+        Alert.alert(
+            "Deseja enviar o experimento para o servidor?",
+            "Ao enviar você poderá compartilhar com outros usuários e receber notificações.",
+            [
+                {
+                    text: "Cancelar",
+                    style: "cancel"
+                },
+                {
+                    text: "Enviar",
+                    onPress: () => uploadExperiment(experiment)
+                }
+            ]
+        );
+    }
+
+    const uploadExperiment = async (experiment) => {
+        try {
+            console.log("Enviando experimento", experiment);
+            const response = await sendExperiment(experiment);
+            console.log("Experimento enviado", response);
+            await updateExperiment(experiment.id, { serverId: parseInt(response) });
+            fetchData();
+        } catch (error) {
+            console.error("Error uploading experiment: ", error);
+        }
+    }
+    
+
+
 
     const alertRemoveExperiment = (id) => {
         Alert.alert(
@@ -79,18 +111,37 @@ const ExperimentsScreen = (props) => {
                             <Text style={styles.text}>{item.incubator}</Text>
                             <Text style={styles.text}>{item.temperature}</Text>
                             <Text style={styles.text}>{item.humidity}</Text>
-                            <Text style={styles.text}>{item.startTimestamp}</Text>
-                            <Text style={styles.text}>{item.endTimestamp}</Text>
-                            <Text style={styles.text}>{item.createdTimestamp}</Text>
+                            <Text style={styles.text}>{new Date(item.startTimestamp * 1000).toLocaleString()}</Text>
+                            <Text style={styles.text}>{new Date(item.endTimestamp * 1000).toLocaleString()}</Text>
+                            <Text style={styles.text}>{new Date(item.createdTimestamp * 1000).toLocaleString()}</Text>
                             <Text style={styles.text}>{item.observation}</Text>
                         </View>
-                        
-                        <TouchableOpacity
-                            style={styles.buttonContainer}
-                            onPress={() => alertRemoveExperiment(item.id)}
-                        >
-                            <Icon name="trash" size={30} color="red" />
-                        </TouchableOpacity>
+                        <View style={style.buttonsContainer}>
+                            {!item.serverId && (
+                            <TouchableOpacity
+                                style={style.buttonContainer}
+                                onPress={() => alertUploadExperiment(item)}
+                            >
+                                <Icon name="cloud-upload" size={30} color="#4682b4" />
+                            </TouchableOpacity>
+                            )}
+                            
+                            {item.serverId && (
+                                <TouchableOpacity
+                                    style={style.buttonContainer}
+                                    onPress={() => shareExperiment(item)}
+                                >
+                                    <Icon name="share-social" size={30} color="#4682b4" />
+                                </TouchableOpacity>
+                            )}
+                            
+                            <TouchableOpacity
+                                style={style.buttonContainer}
+                                onPress={() => alertRemoveExperiment(item.id)}
+                            >
+                                <Icon name="trash" size={30} color="red" />
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 )}
                 style={{ width: '100%',}}
@@ -136,9 +187,11 @@ const style = StyleSheet.create({
     infoContainer: {
         
     },
+    buttonsContainer: {
+        justifyContent: "space-between",
+    },
     buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        margin: 8,
     },
 });
 
