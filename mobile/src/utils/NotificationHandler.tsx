@@ -126,13 +126,13 @@ export default function NotificationHandler() {
   }, []);
 
   async function handleSendToken(token: string) {
-    const tokenWasSet = await AsyncStorage.getItem('sentToken');
-    if (tokenWasSet || !token)
+    const savedToken = await AsyncStorage.getItem('notificationToken');
+    if (savedToken || !token)
       return;
     
     sendToken(token).then((res) => {
       console.log(res);
-      AsyncStorage.setItem('sentToken', 'true');
+      AsyncStorage.setItem('notificationToken', token);
     });
   }
 

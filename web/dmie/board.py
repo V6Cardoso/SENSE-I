@@ -59,13 +59,27 @@ def addDevice():
 def addExperiment():
     data = request.get_json()
     print(data)
+    experiment = data.get('experiment')
+    token = data.get('pushToken')
     db = get_db()
-    cursor = db.execute(
-        "INSERT INTO experiments (name, incubator, temperature, temperatureLowThreshold, temperatureHighThreshold, humidity, humidityLowThreshold, humidityHighThreshold, startTimestamp, endTimestamp, createdTimestamp, observation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        (data.get('name'), data.get('incubator'), data.get('temperature'), data.get('temperatureLowThreshold'), data.get('temperatureHighThreshold'), data.get('humidity'), data.get('humidityLowThreshold'), data.get('humidityHighThreshold'), data.get('startTimestamp'), data.get('endTimestamp'), data.get('createdTimestamp'), data.get('observation'))
-    )
-    db.commit()
-    return str(cursor.lastrowid)
+    try:
+        cursor = db.execute(
+            "INSERT INTO experiments (name, incubator, temperature, temperatureLowThreshold, temperatureHighThreshold, humidity, humidityLowThreshold, humidityHighThreshold, startTimestamp, endTimestamp, createdTimestamp, observation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (experiment.get('name'), experiment.get('incubator'), experiment.get('temperature'), experiment.get('temperatureLowThreshold'), experiment.get('temperatureHighThreshold'), experiment.get('humidity'), experiment.get('humidityLowThreshold'), experiment.get('humidityHighThreshold'), experiment.get('startTimestamp'), experiment.get('endTimestamp'), experiment.get('createdTimestamp'), experiment.get('observation'))
+        )
+        db.commit()
+
+        experiment_id = cursor.lastrowid
+        db.execute(
+            "INSERT INTO device_experiments (device_id, experiment_id) VALUES (?, ?)",
+            (token, experiment_id)
+        )
+        db.commit()
+        print('experiment_id -> ', experiment_id)
+        return str(experiment_id)
+    except Exception as e:
+        print('e -> ', e)
+        return str(e)
 
 @bp.route("/getExperiments", methods=["POST"])
 def getExperiments():

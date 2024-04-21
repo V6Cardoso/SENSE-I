@@ -3,8 +3,10 @@ import { useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { useState } from 'react';
 import Icon from "react-native-vector-icons/Ionicons";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../utils/styles';
 import ExperimentModal from '../components/ExperimentModal';
+
 
 import NotificationHandler from '../utils/NotificationHandler';
 
@@ -16,8 +18,8 @@ import { setExperimentsList } from "../../context/actions/experimentActions";
 
 
 const ExperimentsScreen = (props) => {
-
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [notificationToken, setNotificationToken] = useState(null);
 
     const closeCreateModalHandler = () => {
         setShowCreateModal(false);
@@ -30,6 +32,8 @@ const ExperimentsScreen = (props) => {
     useEffect(() => {
         console.log("ExperimentsScreen mounted");
         fetchData();
+        getNotificationToken();
+
     }, []);
 
     const fetchData = async () => {
@@ -37,6 +41,15 @@ const ExperimentsScreen = (props) => {
         try {
             data = await getExperiments();
             props.setExperimentsList(data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const getNotificationToken = async () => {
+        try {
+            const token = await AsyncStorage.getItem("notificationToken");
+            setNotificationToken(token);
         } catch (error) {
             console.error(error);
         }
@@ -62,7 +75,7 @@ const ExperimentsScreen = (props) => {
     const uploadExperiment = async (experiment) => {
         try {
             console.log("Enviando experimento", experiment);
-            const response = await sendExperiment(experiment);
+            const response = await sendExperiment(experiment, notificationToken);
             console.log("Experimento enviado", response);
             await updateExperiment(experiment.id, { serverId: parseInt(response) });
             fetchData();
@@ -117,7 +130,7 @@ const ExperimentsScreen = (props) => {
                             <Text style={styles.text}>{item.observation}</Text>
                         </View>
                         <View style={style.buttonsContainer}>
-                            {!item.serverId && (
+                            {!item.serverId && notificationToken && (
                             <TouchableOpacity
                                 style={style.buttonContainer}
                                 onPress={() => alertUploadExperiment(item)}
@@ -126,7 +139,7 @@ const ExperimentsScreen = (props) => {
                             </TouchableOpacity>
                             )}
                             
-                            {item.serverId && (
+                            {item.serverId && notificationToken && (
                                 <TouchableOpacity
                                     style={style.buttonContainer}
                                     onPress={() => shareExperiment(item)}
