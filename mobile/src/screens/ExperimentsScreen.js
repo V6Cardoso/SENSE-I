@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { useState } from 'react';
 import Icon from "react-native-vector-icons/Ionicons";
+import * as Progress from 'react-native-progress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../utils/styles';
 import ExperimentModal from '../components/ExperimentModal';
@@ -105,9 +106,23 @@ const ExperimentsScreen = (props) => {
     }
 
     const handleRemoveExperiment = async (id, serverId) => {
-        const response = await removeExperiment(serverId);
+        if (serverId) {
+            const response = await removeExperiment(serverId);
+        }
         await deleteExperiment(id);
         fetchData();
+    }
+
+    const getCurrentTime = () => {
+        return Math.floor(Date.now() / 1000);
+    }
+
+    const calculateProgress = (startTimestamp, endTimestamp) => {
+        const currentTime = getCurrentTime();
+        const totalDuration = endTimestamp - startTimestamp;
+        const elapsedTime = currentTime - startTimestamp;
+        const progress = elapsedTime / totalDuration;
+        return progress;
     }
 
 
@@ -120,42 +135,55 @@ const ExperimentsScreen = (props) => {
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
                     <View style={style.experimentItem}>
-                        <View style={style.infoContainer}>
-                            <Text style={styles.text}>{item.name}</Text>
-                            <Text style={styles.text}>{item.incubator}</Text>
-                            <Text style={styles.text}>{item.temperature}</Text>
-                            <Text style={styles.text}>{item.humidity}</Text>
-                            <Text style={styles.text}>{new Date(item.startTimestamp * 1000).toLocaleString()}</Text>
-                            <Text style={styles.text}>{new Date(item.endTimestamp * 1000).toLocaleString()}</Text>
-                            <Text style={styles.text}>{new Date(item.createdTimestamp * 1000).toLocaleString()}</Text>
-                            <Text style={styles.text}>{item.observation}</Text>
-                        </View>
-                        <View style={style.buttonsContainer}>
-                            {!item.serverId && notificationToken && (
-                            <TouchableOpacity
-                                style={style.buttonContainer}
-                                onPress={() => alertUploadExperiment(item)}
-                            >
-                                <Icon name="cloud-upload" size={30} color="#4682b4" />
-                            </TouchableOpacity>
-                            )}
-                            
-                            {item.serverId && notificationToken && (
+                        <View style={style.divideContainer}>
+                            <View style={style.infoContainer}>
+                                <Text style={styles.text}>{item.name}</Text>
+                                <Text style={styles.text}>{item.incubator}</Text>
+                                <Text style={styles.text}>{item.temperature}</Text>
+                                <Text style={styles.text}>{item.humidity}</Text>
+                                <Text style={styles.text}>{new Date(item.startTimestamp * 1000).toLocaleString()}</Text>
+                                <Text style={styles.text}>{new Date(item.endTimestamp * 1000).toLocaleString()}</Text>
+                                <Text style={styles.text}>{new Date(item.createdTimestamp * 1000).toLocaleString()}</Text>
+                                <Text style={styles.text}>{item.observation}</Text>
+                            </View>
+                            <View style={style.buttonsContainer}>
+                                {!item.serverId && notificationToken && (
                                 <TouchableOpacity
                                     style={style.buttonContainer}
-                                    onPress={() => shareExperiment(item)}
+                                    onPress={() => alertUploadExperiment(item)}
                                 >
-                                    <Icon name="share-social" size={30} color="#4682b4" />
+                                    <Icon name="cloud-upload" size={30} color="#4682b4" />
                                 </TouchableOpacity>
-                            )}
-                            
-                            <TouchableOpacity
-                                style={style.buttonContainer}
-                                onPress={() => alertRemoveExperiment(item.id, item.serverId)}
-                            >
-                                <Icon name="trash" size={30} color="red" />
-                            </TouchableOpacity>
+                                )}
+                                
+                                {item.serverId && notificationToken && (
+                                    <TouchableOpacity
+                                        style={style.buttonContainer}
+                                        onPress={() => shareExperiment(item)}
+                                    >
+                                        <Icon name="share-social" size={30} color="#4682b4" />
+                                    </TouchableOpacity>
+                                )}
+                                
+                                <TouchableOpacity
+                                    style={style.buttonContainer}
+                                    onPress={() => alertRemoveExperiment(item.id, item.serverId)}
+                                >
+                                    <Icon name="trash" size={30} color="red" />
+                                </TouchableOpacity>
+                            </View>
                         </View>
+                        <Progress.Bar
+                            progress={calculateProgress(item.startTimestamp, item.endTimestamp)}
+                            width={null}
+                            animated={true}
+                            color="#4682b4"
+                            borderRadius={20}
+                            animationConfig={{ bounciness: 20 }}
+                            animationType= "timing"
+
+                        />
+                        
                     </View>
                 )}
                 style={{ width: '100%',}}
@@ -195,6 +223,9 @@ const style = StyleSheet.create({
         elevation: 5,
         borderRadius: 10,
         padding: 20,
+    },
+    divideContainer: {
+        marginBottom: 10,
         flexDirection: "row",
         justifyContent: "space-between",
     },
