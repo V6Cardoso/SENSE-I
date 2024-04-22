@@ -19,13 +19,17 @@ import {
 } from "react-native-chart-kit";
 import DropDownPicker from "react-native-dropdown-picker";
 
+import { connect } from "react-redux";
+
 import { getOrionData } from "../utils/fetchData";
 
-const GraphScreen = () => {
+const GraphScreen = (props) => {
   const [openParam, setOpenParam] = useState(false);
   const [paramValue, setParamValue] = useState(null);
   const [openDevice, setOpenDevice] = useState(false);
   const [deviceValue, setDeviceValue] = useState(null);
+
+  const [incubators, setIncubators] = useState([]);
 
   const [device, setDevice] = useState("urn:ngsi-ld:dmie001");
   const [attr, setAttr] = useState("temperature");
@@ -43,15 +47,19 @@ const GraphScreen = () => {
     setOpenChart(!openChart);
   };
 
+  useEffect(() => {
+    if (!Array.isArray(props.devices))
+        return;
+    
+    setIncubators(props.devices.map((device) => ({label: "Estufa " + device.device_id.substring(device.device_id.indexOf('dmie') + 4), value: device.entity_name})));
+  }, [props.devices]);
+
   return (
     <View style={styles.container}>
       <View style={[styles.inputContainer, {zIndex: 2 }]}>
-        <Text>Dispositivo:</Text>
+        <Text>Estufa:</Text>
         <DropDownPicker
-          items={[
-            { label: "Estufa 001", value: "urn:ngsi-ld:dmie001" },
-            { label: "Estufa 002", value: "urn:ngsi-ld:dmie002" },
-          ]}
+          items={incubators}
           defaultValue={device}
           containerStyle={{ height: 40, width: 200 }}
           style={{ backgroundColor: "#fafafa"}}
@@ -175,4 +183,10 @@ const styles = StyleSheet.create({
     },
 });
 
-export default GraphScreen;
+const mapStateToProps = (state) => {
+  return {
+      devices: state.devices.devices,
+  };
+};
+
+export default connect(mapStateToProps)(GraphScreen);
