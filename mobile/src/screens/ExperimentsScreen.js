@@ -10,7 +10,7 @@ import ExperimentModal from '../components/ExperimentModal';
 
 import NotificationHandler from '../utils/NotificationHandler';
 
-import { sendExperiment } from '../utils/fetchData';
+import { sendExperiment, removeExperiment } from '../utils/fetchData';
 import { getExperiments, deleteExperiment, updateExperiment } from '../database/dbSenseI';
 
 import { connect } from "react-redux";
@@ -87,7 +87,7 @@ const ExperimentsScreen = (props) => {
 
 
 
-    const alertRemoveExperiment = (id) => {
+    const alertRemoveExperiment = (id, serverId) => {
         Alert.alert(
             "Remover experimento",
             "Deseja remover o experimento?",
@@ -98,13 +98,14 @@ const ExperimentsScreen = (props) => {
                 },
                 {
                     text: "Remover",
-                    onPress: () => removeExperiment(id)
+                    onPress: () => handleRemoveExperiment(id, serverId)
                 }
             ]
         );
     }
 
-    const removeExperiment = async (id) => {
+    const handleRemoveExperiment = async (id, serverId) => {
+        const response = await removeExperiment(serverId);
         await deleteExperiment(id);
         fetchData();
     }
@@ -150,7 +151,7 @@ const ExperimentsScreen = (props) => {
                             
                             <TouchableOpacity
                                 style={style.buttonContainer}
-                                onPress={() => alertRemoveExperiment(item.id)}
+                                onPress={() => alertRemoveExperiment(item.id, item.serverId)}
                             >
                                 <Icon name="trash" size={30} color="red" />
                             </TouchableOpacity>

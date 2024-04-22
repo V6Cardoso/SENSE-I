@@ -2,6 +2,7 @@ import Config from "react-native-config";
 
 function sendToken(token) {
     const urlEncodedData = "pushToken=" + encodeURIComponent(token);
+    console.log(urlEncodedData);
     return fetch("", {
         method: 'POST',
         headers: {
@@ -20,13 +21,15 @@ function sendToken(token) {
     );
 };
 
-function sendExperiment(experiment) {
-    return fetch(Config.EXPERIMENT_URL, {
+function sendExperiment(experiment, token) {
+    return fetch("", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(experiment)
+        body: JSON.stringify({
+            experiment: experiment,
+            pushToken: token})
     })
         .then(response => response.json())
         .then(response => {
@@ -38,6 +41,27 @@ function sendExperiment(experiment) {
         }
     );
 };
+
+function removeExperiment(id) {
+    const urlEncodedData = "id=" + encodeURIComponent(id);
+    return fetch("", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: urlEncodedData
+    })
+        .then(response => response.text())
+        .then(response => {
+            return response;
+        })
+        .catch(error => {
+            console.error(error);
+            return error;
+        }
+    );
+}
+
 
 function getDevices() {
     return fetch("",{
@@ -89,4 +113,4 @@ function getSthCometData(device, attr) {
         });
     };
 
-export { getDevices, getOrionData, getSthCometData, sendToken, sendExperiment};
+export { getDevices, getOrionData, getSthCometData, sendToken, sendExperiment, removeExperiment};
