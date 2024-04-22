@@ -14,8 +14,11 @@ def send_push_message(token, title, message):
     else:
         tokens = [token]
 
+    responses = []
     for token in tokens:
-        send_push_message_chunk(token, title, message)
+        response = send_push_message_chunk(token, title, message)
+        responses.append(response)
+    return responses
 
 def send_push_message_chunk(token, title, message):
 

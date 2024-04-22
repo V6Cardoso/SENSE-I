@@ -92,6 +92,7 @@ def deleteExperiment():
     form = request.form
     db = get_db()
     db.execute("DELETE FROM experiments WHERE id = ?", (form['id'],))
+    db.execute("DELETE FROM device_experiments WHERE experiment_id = ?", (form['id'],))
     db.commit()
     return "Experiment deleted"
 
@@ -169,13 +170,22 @@ def sw():
     return current_app.send_static_file('service-worker.js')
 
 def job():
-    orion_data = getOrionData()
-    check_experiments(orion_data)
+    from flask import Flask
+
+    app = Flask(__name__, instance_relative_config=True)
+    app.config.from_mapping(
+        # a default secret that should be overridden by instance config
+        SECRET_KEY="dev",
+        # store the database in the instance folder
+        DATABASE=os.path.join(app.instance_path, "dmie.sqlite"),
+    )
+    with app.app_context():
+        orion_data = getOrionData()
+        check_experiments(orion_data)
 
     return "Job done"
 
-scheduler = BackgroundScheduler()
-scheduler.add_job(job, 'interval', minutes=5)
+scheduler = BackgroundScheduler({'apscheduler.job_defaults.max_instances': 2})
+scheduler.add_job(job, 'interval', minutes=1)
 scheduler.start()
-
 

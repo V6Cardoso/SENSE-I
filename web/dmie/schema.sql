@@ -37,6 +37,6 @@ CREATE TABLE device_experiments(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   device_id INTEGER,
   experiment_id INTEGER,
-  FOREIGN KEY(device_id) REFERENCES devices(id) ON DELETE CASCADE,
+  FOREIGN KEY(device_id) REFERENCES devices(pushToken) ON DELETE CASCADE,
   FOREIGN KEY(experiment_id) REFERENCES experiments(id) ON DELETE CASCADE
 );
