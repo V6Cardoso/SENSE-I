@@ -19,11 +19,13 @@ import {
   StackedBarChart
 } from "react-native-chart-kit";
 import DropDownPicker from "react-native-dropdown-picker";
+import Icon from "react-native-vector-icons/Ionicons";
 
 import { connect } from "react-redux";
 
 import CustomTimePicker from "../components/CustomTimePicker";
 import { getOrionData } from "../utils/fetchData";
+import styles from "../utils/styles";
 
 const GraphScreen = (props) => {
   const [openParam, setOpenParam] = useState(false);
@@ -54,96 +56,105 @@ const GraphScreen = (props) => {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.inputContainer, {zIndex: 2 }]}>
-        <Text>Estufa:</Text>
-        <DropDownPicker
-          items={incubators}
-          defaultValue={device}
-          containerStyle={{ height: 40, width: 200 }}
-          style={{ backgroundColor: "#fafafa"}}
-          itemStyle={{
-            justifyContent: "flex-start",
-          }}
-          dropDownStyle={{ backgroundColor: "#fafafa"}}
-          onChangeItem={(item) => setDevice(item.value)}
-          open={openDevice}
-          setOpen={setOpenDevice}
-          value={deviceValue}
-          setValue={setDeviceValue}
-        />
-      </View>
+      <Text style={styles.header}>Gráficos</Text>
+      <View style={style.inputContainer}>
+        <View style={style.section}>
+          <View style={[style.buttonContainer, {zIndex: 2 }]}>
+            <Text>Estufa:</Text>
+            <DropDownPicker
+              items={incubators}
+              defaultValue={device}
+              containerStyle={{ height: 40, width: 200 }}
+              style={{ backgroundColor: "#ffffff"}}
+              itemStyle={{
+                justifyContent: "flex-start",
+              }}
+              dropDownStyle={{ backgroundColor: "#ffffff"}}
+              onChangeItem={(item) => setDevice(item.value)}
+              open={openDevice}
+              setOpen={setOpenDevice}
+              value={deviceValue}
+              setValue={setDeviceValue}
+            />
+          </View>
 
-      <View style={[styles.inputContainer, {zIndex: 1 }]}>
-        <Text>Parâmetro:</Text>
-        <DropDownPicker
-          items={[
-            { label: "Temperatura", value: "temperature" },
-            { label: "Umidade", value: "humidity" },
-          ]}
-          defaultValue={attr}
-          containerStyle={{ height: 40, width: 200 }}
-          style={{ backgroundColor: "#fafafa" }}
-          itemStyle={{
-            justifyContent: "flex-start",
-          }}
-          dropDownStyle={{ backgroundColor: "#fafafa"}}
-          onChangeItem={(item) => setAttr(item.value)}
-          open={openParam}
-          setOpen={setOpenParam}
-          value={paramValue}
-          setValue={setParamValue}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text>Data de:</Text>
-        <CustomTimePicker setDate={(date) => console.log(date)} />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text>Data até:</Text>
-        <CustomTimePicker setDate={(date) => console.log(date)} />
-      </View>
-
-      <View>
-        <Button title="Pesquisar" onPress={handleSubmit} />
-      </View>
-
-      {openChart &&
-        <View style={styles.chartContainer}>
-            <Text style={styles.chartTitle}>Tela em desenvolvimento 😜</Text>
+          <View style={[style.buttonContainer, {zIndex: 1 }]}>
+            <Text>Parâmetro:</Text>
+            <DropDownPicker
+              items={[
+                { label: "Temperatura", value: "temperature" },
+                { label: "Umidade", value: "humidity" },
+              ]}
+              defaultValue={attr}
+              containerStyle={{ height: 40, width: 200 }}
+              style={{ backgroundColor: "#ffffff" }}
+              itemStyle={{
+                justifyContent: "flex-start",
+              }}
+              dropDownStyle={{ backgroundColor: "#ffffff"}}
+              onChangeItem={(item) => setAttr(item.value)}
+              open={openParam}
+              setOpen={setOpenParam}
+              value={paramValue}
+              setValue={setParamValue}
+            />
+          </View>
         </View>
-      }
+        
+        <View style={style.section}>
+          <View style={style.buttonContainer}>
+            <Text>Data de:</Text>
+            <CustomTimePicker setDate={(date) => console.log(date)} />
+          </View>
+
+          <View style={style.buttonContainer}>
+            <Text>Data até:</Text>
+            <CustomTimePicker setDate={(date) => console.log(date)} />
+          </View>
+        </View>
+
+        <TouchableOpacity style={styles.modernButton} onPress={handleSubmit}>
+            <Text >Pesquisar</Text>
+            <Icon name="search" size={20} color="#4682b4" />
+        </TouchableOpacity>
+
+        {openChart &&
+          <View style={style.chartContainer}>
+              <Text style={style.chartTitle}>Tela em desenvolvimento 😜</Text>
+          </View>
+        }
+      </View>
+      
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5FCFF",
-
-    padding: 10,
-  },
-  inputContainer: {
+const style = StyleSheet.create({
+  section: {
+    flexDirection: "row",
+    justifyContent: "space-around",
     marginBottom: 10,
   },
-    chartContainer: {
-        width: "100%",
-        height: 300,
-        backgroundColor: "#F5FCFF",
-        borderWidth: 1,
-        borderColor: "black",
-        borderRadius: 10,
-        margin: 10,
-    },
-    chartTitle: {
-        fontSize: 20,
-        textAlign: "center",
-        margin: 10,
-    },
+  inputContainer: {
+    width: "100%",
+  },
+  buttonContainer: {
+    marginBottom: 10,
+  },
+  chartContainer: {
+      width: "100%",
+      height: 300,
+      backgroundColor: "#F5FCFF",
+      borderWidth: 1,
+      borderColor: "black",
+      borderRadius: 10,
+      margin: 10,
+  },
+  chartTitle: {
+      fontSize: 20,
+      textAlign: "center",
+      margin: 10,
+  },
 });
 
 const mapStateToProps = (state) => {
