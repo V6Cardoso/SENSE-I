@@ -7,6 +7,7 @@ import {
   TextInput,
   Button,
   Switch,
+  TouchableOpacity,
 } from "react-native";
 
 import {
@@ -21,6 +22,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 
 import { connect } from "react-redux";
 
+import CustomTimePicker from "../components/CustomTimePicker";
 import { getOrionData } from "../utils/fetchData";
 
 const GraphScreen = (props) => {
@@ -31,13 +33,9 @@ const GraphScreen = (props) => {
 
   const [incubators, setIncubators] = useState([]);
 
-  const [device, setDevice] = useState("urn:ngsi-ld:dmie001");
+  const [device, setDevice] = useState(null);
   const [attr, setAttr] = useState("temperature");
-  const [lastN, setLastN] = useState("100");
-  const [hLimit, setHLimit] = useState("15");
-  const [hOffset, setHOffset] = useState("0");
-  const [dateFrom, setDateFrom] = useState("");
-  const [dateTo, setDateTo] = useState("");
+
 
   const [openChart, setOpenChart] = useState(false);
 
@@ -98,48 +96,13 @@ const GraphScreen = (props) => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Text>Últimos N:</Text>
-        <TextInput
-          value={lastN}
-          onChangeText={setLastN}
-          keyboardType="numeric"
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text>Limite H:</Text>
-        <TextInput
-          value={hLimit}
-          onChangeText={setHLimit}
-          keyboardType="numeric"
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text>Deslocamento H:</Text>
-        <TextInput
-          value={hOffset}
-          onChangeText={setHOffset}
-          keyboardType="numeric"
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
         <Text>Data de:</Text>
-        <TextInput
-          value={dateFrom}
-          onChangeText={setDateFrom}
-          keyboardType="numeric"
-        />
+        <CustomTimePicker setDate={(date) => console.log(date)} />
       </View>
 
       <View style={styles.inputContainer}>
         <Text>Data até:</Text>
-        <TextInput
-          value={dateTo}
-          onChangeText={setDateTo}
-          keyboardType="numeric"
-        />
+        <CustomTimePicker setDate={(date) => console.log(date)} />
       </View>
 
       <View>

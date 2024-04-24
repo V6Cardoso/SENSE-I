@@ -15,6 +15,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 
 import styles from '../utils/styles';
 import CustomModal from './CustomModal';
+import CustomTimePicker from "../components/CustomTimePicker";
 
 import { insertExperiment } from '../database/dbSenseI';
 import { connect } from "react-redux";
@@ -31,15 +32,8 @@ const ExperimentModal = (props) => {
     const [humidityLowThreshold, setHumidityLowThreshold] = useState(null);
     const [humidityHighThreshold, setHumidityHighThreshold] = useState(null);
     const [startDate, setStartDate] = useState(new Date());
-    const [startTimestamp, setStartTimestamp] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
-    const [endTimestamp, setEndTimestamp] = useState(new Date());
     const [observation, setObservation] = useState('');
-
-    const [openStartTimePicker, setOpenStartTimePicker] = useState(false);
-    const [openStartDatePicker, setOpenStartDatePicker] = useState(false);
-    const [openEndTimePicker, setOpenEndTimePicker] = useState(false);
-    const [openEndDatePicker, setOpenEndDatePicker] = useState(false);
     
     const [openPicker, setOpenPicker] = useState(false);
 
@@ -61,22 +55,8 @@ const ExperimentModal = (props) => {
             humidity: humidity,
             humidityLowThreshold: humidityLowThreshold,
             humidityHighThreshold: humidityHighThreshold,
-            startTimestamp: Math.floor(new Date(
-                startDate.getFullYear(),
-                startDate.getMonth(),
-                startDate.getDate(),
-                startTimestamp.getHours(),
-                startTimestamp.getMinutes(),
-                startTimestamp.getSeconds()
-            ).getTime() / 1000),
-            endTimestamp: Math.floor(new Date(
-                endDate.getFullYear(),
-                endDate.getMonth(),
-                endDate.getDate(),
-                endTimestamp.getHours(),
-                endTimestamp.getMinutes(),
-                endTimestamp.getSeconds()
-            ).getTime() / 1000),
+            startTimestamp: Math.floor(startDate.getTime() / 1000),
+            endTimestamp: Math.floor(endDate.getTime() / 1000),
             createdTimestamp: Math.floor(new Date().getTime() / 1000),
             observation: observation,
         };
@@ -155,77 +135,16 @@ const ExperimentModal = (props) => {
                     />
 
                 <Text style={style.text}>Início do experimento</Text>
-
-                <TouchableOpacity onPress={() => setOpenStartDatePicker(true)}>
-                    <Text>{startDate.toDateString()}</Text>
-                </TouchableOpacity>
-                {openStartDatePicker &&
-                    <DateTimePicker
-                        value={startDate}
-                        mode="date"
-                        display="default"
-                        onChange={(event, selectedDate) => {
-                            setOpenStartDatePicker(false);
-                            setStartDate(selectedDate);
-                        }}
-                        />
-                }
-                
-                <TouchableOpacity onPress={() => setOpenStartTimePicker(true)}>
-                    <Text>{startTimestamp.toTimeString()}</Text>
-                </TouchableOpacity>
-                {openStartTimePicker && 
-                    <DateTimePicker
-                        value={startTimestamp}
-                        mode="time"
-                        is24Hour={true}
-                        display="default"
-                        onChange={(event, selectedDate) => {
-                            setOpenStartTimePicker(false);
-                            setStartTimestamp(selectedDate);
-                        }}
-                        
-                        />
-                }
-
-                
-
+                <CustomTimePicker
+                    date={startDate}
+                    setDate={setStartDate}
+                    />
                 
                 <Text style={style.text}>Fim do experimento</Text>
-                <TouchableOpacity onPress={() => setOpenEndDatePicker(true)}>
-                    <Text>{endDate.toDateString()}</Text>
-                </TouchableOpacity>
-                {openEndDatePicker &&
-                    <DateTimePicker
-                        value={endDate}
-                        mode="date"
-                        display="default"
-                        onChange={(event, selectedDate) => {
-                            setOpenEndDatePicker(false);
-                            setEndDate(selectedDate);
-                        }}
-                        />
-                }
-
-                <TouchableOpacity onPress={() => setOpenEndTimePicker(true)}>
-                    <Text>{endTimestamp.toTimeString()}</Text>
-                </TouchableOpacity>
-                {openEndTimePicker &&
-                    <DateTimePicker
-                        value={endTimestamp}
-                        mode="time"
-                        is24Hour={true}
-                        display="default"
-                        onChange={(event, selectedDate) => {
-                            setOpenEndTimePicker(false);
-                            setEndTimestamp(selectedDate);
-                        }}
-                        />
-                }
-
-
-                
-
+                <CustomTimePicker
+                    date={endDate}
+                    setDate={setEndDate}
+                    />
 
 
                 <Text style={style.text}>Estufa</Text>
