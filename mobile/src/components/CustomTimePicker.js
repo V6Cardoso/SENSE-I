@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#ffffff',
         borderRadius: 10,
         shadowColor: '#000',
         shadowOffset: {

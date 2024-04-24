@@ -138,13 +138,11 @@ const ExperimentsScreen = (props) => {
                         <View style={style.divideContainer}>
                             <View style={style.infoContainer}>
                                 <Text style={styles.text}>{item.name}</Text>
-                                <Text style={styles.text}>{item.incubator}</Text>
-                                <Text style={styles.text}>{item.temperature}</Text>
-                                <Text style={styles.text}>{item.humidity}</Text>
-                                <Text style={styles.text}>{new Date(item.startTimestamp * 1000).toLocaleString()}</Text>
-                                <Text style={styles.text}>{new Date(item.endTimestamp * 1000).toLocaleString()}</Text>
-                                <Text style={styles.text}>{new Date(item.createdTimestamp * 1000).toLocaleString()}</Text>
-                                <Text style={styles.text}>{item.observation}</Text>
+                                <Text style={styles.text}>Estufa {item.incubator.substring(item.incubator.indexOf('dmie') + 4)}</Text>
+                                <Text style={styles.text}>Temperatura:{item.temperature}</Text>
+                                <Text style={styles.text}>Umidade:{item.humidity}</Text>
+                                <Text style={styles.text}>Início do experimento: {new Date(item.startTimestamp * 1000).toLocaleString('pt-BR', { day: 'numeric', month: 'numeric', hour: 'numeric', minute: 'numeric' })}</Text>
+                                <Text style={styles.text}>Fim do experimento: {new Date(item.endTimestamp * 1000).toLocaleString('pt-BR', { day: 'numeric', month: 'numeric', hour: 'numeric', minute: 'numeric' })}</Text>
                             </View>
                             <View style={style.buttonsContainer}>
                                 {!item.serverId && notificationToken && (
@@ -230,6 +228,7 @@ const style = StyleSheet.create({
         justifyContent: "space-between",
     },
     infoContainer: {
+        width: "85%",
         
     },
     buttonsContainer: {
