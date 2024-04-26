@@ -4,6 +4,8 @@ from flask import request
 from flask import current_app
 from werkzeug.exceptions import abort
 
+from datetime import datetime, timezone
+
 from .notificationHandler import send_push_message
 from .dataMonitoringServer import check_experiments
 
@@ -160,9 +162,90 @@ def getSthCometData():
     
     response = requests.request("GET", url, headers=headers, params=params)
     return response.json()
+
+@bp.route("/sthCometV2", methods=["POST"])
+def sthCometV2():
+    data = request.get_json()
+    print(data)
+
+    url = os.getenv('IP')
+    if url is None:
+        return "No env IP"
     
+    url = url + ":8666/STH/v2/entities/" + data['device'] + '/attrs/' + data['attr']
+
+    headers = {
+        'fiware-service': 'smart',
+        'fiware-servicepath': '/'
+    }
+
+    responses = []
+    start_date = data['dateFrom'] # ISO 8601
+    end_date = data['dateTo'] # ISO 8601
+
+    while start_date < end_date:
+        params = {
+            'type': 'estufa',
+            'hLimit': 100,
+            'hOffset': 1,
+            'dateFrom': start_date,
+            'dateTo': end_date
+        }
+        response = requests.request("GET", url, headers=headers, params=params)
+        if response.status_code == 200:
+
+            response_formatted = response.json()
+            data_value = response_formatted.get('value')
+            if not data_value:
+                break
+            responses.extend(data_value)
+            start_date = data_value[-1]['recvTime']
+        else:
+            return "Error: " + response.reason
     
 
+    extracted_data = extract_date_and_value(responses)
+    print('len(extracted_data) -> ', len(extracted_data))
+
+    samples = data.get('samples') if data.get('samples') else 100
+    average_data = convert_average_data(extracted_data, samples)
+    print('len(average_data) -> ', len(average_data))
+
+    return average_data
+
+
+
+def extract_date_and_value(data):
+    return [{'date': item['recvTime'], 'value': item['attrValue']} for item in data]
+
+def convert_average_data(data, n=100):
+    average_data = []
+    data_length = len(data)
+    chunk_size = data_length // n
+
+    if chunk_size == 0:
+        return data
+
+    for i in range(n):
+        chunk = data[i*chunk_size:(i+1)*chunk_size]
+        if not chunk:
+            break
+
+        average_date = find_average_date([datetime.fromisoformat(item['date'].replace('Z', '+00:00')) for item in chunk])
+        average_value = sum([item['value'] for item in chunk]) / len(chunk)
+        average_value = round(average_value, 2)
+        average_data.append({
+            'date': average_date,
+            'value': average_value
+        })
+
+    return average_data
+
+def find_average_date(dates):
+    timestamps = [date.timestamp() for date in dates]
+    average_timestamp = sum(timestamps) / len(timestamps)
+    average_date = datetime.fromtimestamp(average_timestamp, tz=timezone.utc)
+    return average_date.isoformat().replace('+00:00', 'Z')
 
 
 @bp.route('/service-worker.js', methods=['GET'])

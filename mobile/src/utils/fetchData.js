@@ -100,9 +100,20 @@ function getOrionData() {
         });
     };
 
-function getSthCometData(device, attr) {
-    let endpoint = Config.STHComet_URL + device + '/attrs/' + attr;
-    return fetch(endpoint)
+function getSthCometData(device, attr, dateFrom, dateTo) {
+    return fetch("", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            device: device,
+            attr: attr,
+            dateFrom: dateFrom,
+            dateTo: dateTo,
+            samples: 10,
+        })
+    })
         .then(response => response.json())
         .then(data => {
             return data;
@@ -110,7 +121,10 @@ function getSthCometData(device, attr) {
         .catch(error => {
             console.error(error);
             return error;
-        });
+    },
+    );
+
+    
     };
 
 export { getDevices, getOrionData, getSthCometData, sendToken, sendExperiment, removeExperiment};
