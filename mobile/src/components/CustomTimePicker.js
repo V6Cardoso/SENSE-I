@@ -48,7 +48,7 @@ function CustomTimePicker(props) {
         }
         
         <TouchableOpacity style={styles.button}  onPress={() => setOpenTimePicker(true)}>
-            <Text>{time.getHours()} : {time.getMinutes().toString().padStart(2, '0')}</Text>
+            <Text>{time.getHours().toString().padStart(2, '0')} : {time.getMinutes().toString().padStart(2, '0')}</Text>
         </TouchableOpacity>
         {openTimePicker && 
             <DateTimePicker
