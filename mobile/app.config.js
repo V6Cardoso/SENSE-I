@@ -4,10 +4,10 @@ export default {
       slug: "mobile",
       version: "1.0.0",
       orientation: "portrait",
-      icon: "./assets/icon.png",
+      icon: "./assets/icon-no-bg.png",
       userInterfaceStyle: "light",
       splash: {
-        image: "./assets/splash.png",
+        image: "./assets/relatorioSplash.png",
         resizeMode: "contain",
         backgroundColor: "#ffffff",
       },
@@ -17,14 +17,14 @@ export default {
       },
       android: {
         adaptiveIcon: {
-          foregroundImage: "./assets/adaptive-icon.png",
+          foregroundImage: "./assets/icon-no-bg.png",
           backgroundColor: "#ffffff",
         },
         package: "com.v6cardoso.mobile",
         googleServicesFile: process.env.GOOGLE_SERVICES_JSON || "./google-services.json",
       },
       web: {
-        favicon: "./assets/favicon.png",
+        favicon: "./assets/icon.png",
       },
       extra: {
         eas: {
