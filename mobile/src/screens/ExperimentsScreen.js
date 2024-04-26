@@ -84,6 +84,19 @@ const ExperimentsScreen = (props) => {
             console.error("Error uploading experiment: ", error);
         }
     }
+
+    const shareExperiment = (experiment) => {
+        Alert.alert(
+            "Essa funcionalidade ainda não está disponível",
+            "Em breve você poderá compartilhar seus experimentos com outros usuários.😉",
+            [
+                {
+                    text: "Ok",
+                    style: "cancel"
+                }
+            ]
+        );
+    }
     
 
 
