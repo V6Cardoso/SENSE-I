@@ -165,7 +165,7 @@ def getSthCometData():
 
 @bp.route("/sthCometV2", methods=["POST"])
 def sthCometV2():
-    data = request.get_json()
+    data = request.form
     print(data)
 
     url = os.getenv('IP')
@@ -203,22 +203,30 @@ def sthCometV2():
         else:
             return "Error: " + response.reason
     
-
     extracted_data = extract_date_and_value(responses)
     print('len(extracted_data) -> ', len(extracted_data))
 
-    samples = data.get('samples') if data.get('samples') else 100
-    average_data = convert_average_data(extracted_data, samples)
-    print('len(average_data) -> ', len(average_data))
-
-    return average_data
+    samples = int(data['samples']) if data['samples'].isdigit() else data['samples']
+    if samples != '':
+        variavel = convert_average_data(extracted_data, samples)
+        print(variavel)
+        return variavel
+    else:
+        return extracted_data
 
 
 
 def extract_date_and_value(data):
-    return [{'date': item['recvTime'], 'value': item['attrValue']} for item in data]
+    formatted_data = []
+    for item in data:
+        if item['attrValue'] != 'nan':
+            formatted_data.append({
+                'date': item['recvTime'],
+                'value': float(item['attrValue'])
+            })
+    return formatted_data
 
-def convert_average_data(data, n=100):
+def convert_average_data(data, n):
     average_data = []
     data_length = len(data)
     chunk_size = data_length // n

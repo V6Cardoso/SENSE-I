@@ -104,15 +104,13 @@ function getSthCometData(device, attr, dateFrom, dateTo) {
     return fetch("", {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: JSON.stringify({
-            device: device,
-            attr: attr,
-            dateFrom: dateFrom,
-            dateTo: dateTo,
-            samples: 10,
-        })
+        body: "device=" + encodeURIComponent(device) +
+              "&attr=" + encodeURIComponent(attr) +
+              "&dateFrom=" + encodeURIComponent(dateFrom) +
+              "&dateTo=" + encodeURIComponent(dateTo) +
+              "&samples=10"
     })
         .then(response => response.json())
         .then(data => {
@@ -121,8 +119,7 @@ function getSthCometData(device, attr, dateFrom, dateTo) {
         .catch(error => {
             console.error(error);
             return error;
-    },
-    );
+        });
 
     
     };

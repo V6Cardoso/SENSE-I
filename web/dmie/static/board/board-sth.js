@@ -1,37 +1,9 @@
-var lastN = document.querySelector('#lastN');
-var hLimit = document.querySelector('#hLimit');
-var hOffset = document.querySelector('#hOffset');
 var dateFrom = document.querySelector('#dateFrom');
 var dateTo = document.querySelector('#dateTo');
 
 var sthcontainer = document.querySelector('#sth_comet_container');
 var formConstruct = document.getElementById('sth_comet_construct_plot');
 var plotTitle = document.getElementById('plotTitle');
-
-[lastN, hLimit, hOffset, dateFrom, dateTo].forEach(function(field) {
-  field.addEventListener('input', checkFields);
-});
-
-function checkFields() {
-  var hLimitValue = hLimit.value;
-  var hOffsetValue = hOffset.value;
-  var lastNValue = lastN.value;
-
-  if (!hLimitValue && !hOffsetValue) {
-      hLimit.removeAttribute("required");
-      hOffset.removeAttribute("required");
-      lastN.setAttribute("required", "");
-  } else if (!lastNValue && (!hLimitValue || !hOffsetValue)) {
-      hLimit.setAttribute("required", "");
-      hOffset.setAttribute("required", "");
-      lastN.removeAttribute("required");
-  } else {
-      hLimit.removeAttribute("required");
-      hOffset.removeAttribute("required");
-      lastN.removeAttribute("required");
-  }
-  
-}
 
 
 
@@ -103,10 +75,22 @@ var layoutSth = {
 function ungroupData(data) {
   var x = [];
   var y = [];
+  let dateFrom = new Date(data[0].date);
+  let dateTo = new Date(data[data.length - 1].date);
+  let dateHasDay = dateFrom.getDate() !== dateTo.getDate();
   data.forEach(function(d) {
-    x.push(d.recvTime);
-    y.push(d.attrValue);
+    let label = '';
+    let date = new Date(d.date);
+    if (dateHasDay) {
+      label += date.getDate() + "/" + (date.getMonth() + 1) + " ";
+    }
+    label += ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
+
+
+    x.push(label);
+    y.push(d.value);
   });
+  console.log('x -> ' + JSON.stringify(x));
   return {x: x, y: y};
 }
 
@@ -124,10 +108,10 @@ function updateSthComet() {
       }
   }
 
-  if (!Array.isArray(sthData?.value) || sthData.value?.length == 0)
+  if (!Array.isArray(sthData) || sthData.length == 0)
     return;
 
-  var data = ungroupData(sthData.value);
+  var data = ungroupData(sthData);
   var newData = new trace(data.x, data.y, params.plotLineName, params.plotColor, params.plotType);
 
   var plot = document.getElementById(params.plotTitle);

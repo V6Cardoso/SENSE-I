@@ -29,10 +29,28 @@
     let sthData;
     function getSthData() {
       event?.stopPropagation();
+
+      let dateFromInput = document.querySelector('#dateFrom');
+      let dateToInput = document.querySelector('#dateTo');
+
+      let attr = document.querySelector('#attr');
+      let device = document.querySelector('#device');
+      let samples = document.querySelector('#samples');
+
+      // Convert the dates
+      let dateFrom = new Date(dateFromInput.value).toISOString();
+      let dateTo = new Date(dateToInput.value).toISOString();
+
       $.ajax({
-          url: '{{url_for("board.getSthCometData")}}',
+          url: '{{url_for("board.sthCometV2")}}',
           type: 'POST',
-          data: $('#sth_comet_form').serialize(),
+          data: {
+            device: device.value,
+            attr: attr.value,
+            dateFrom: dateFrom,
+            dateTo: dateTo,
+            samples: samples.value
+          },
           success: function (response) {
             //console.log(JSON.stringify(response));
             sthData = response;
@@ -64,8 +82,8 @@
           <div>
             <label for="device">Dispositivo:</label>
             <select id="device" name="device">
-              <option value="urn:ngsi-ld:dmie001">Sensor ambiente</option>
-              <option value="urn:ngsi-ld:dmie002">Estufa 1</option>
+              <option value="urn:ngsi-ld:dmie001">Estufa 001</option>
+              <option value="urn:ngsi-ld:dmie002">Estufa 002</option>
             </select>
           </div>
   
@@ -76,21 +94,6 @@
               <option value="humidity">Umidade</option>
             </select>
           </div>
-  
-          <div>
-            <label for="lastN">Últimos N:</label>
-            <input type="number" id="lastN" name="lastN" value="100">
-          </div>
-          
-          <div>
-            <label for="hLimit">Limite H:</label>
-            <input type="number" id="hLimit" name="hLimit" value="15">
-          </div>
-          
-          <div>
-              <label for="hOffset">Deslocamento H:</label>
-            <input type="number" id="hOffset" name="hOffset" value="0">
-          </div>
           
           <div>
               <label for="dateFrom">Data de:</label>
@@ -100,6 +103,11 @@
           <div>
               <label for="dateTo">Data até:</label>
             <input type="datetime-local" id="dateTo" name="dateTo">
+          </div>
+
+          <div>
+            <label for="samples">Amostras:</label>
+            <input type="number" id="samples" name="samples">
           </div>
           
           <div>
