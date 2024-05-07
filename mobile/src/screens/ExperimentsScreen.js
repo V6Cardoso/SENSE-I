@@ -5,10 +5,12 @@ import { useState } from 'react';
 import Icon from "react-native-vector-icons/Ionicons";
 import * as Progress from 'react-native-progress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import QRCode from 'react-native-qrcode-svg';
 import styles from '../utils/styles';
 import ExperimentModal from '../components/ExperimentModal';
+import QRScanner from '../components/QRScanner';
 
-
+import CustomModal from '../components/CustomModal';
 import NotificationHandler from '../utils/NotificationHandler';
 
 import { sendExperiment, removeExperiment } from '../utils/fetchData';
@@ -22,12 +24,22 @@ const ExperimentsScreen = (props) => {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [notificationToken, setNotificationToken] = useState(null);
 
+    const [openQRModal, setOpenQRModal] = useState(false);
+    const [openQRScanner, setOpenQRScanner] = useState(false);
+
+    const FanemImage = require('../../assets/icon.png');
+
+
     const closeCreateModalHandler = () => {
         setShowCreateModal(false);
     }
 
     const dispatchCreateModalEvent = () => {
         setShowCreateModal(true);
+    }
+
+    const dispatchOpenQRCamera = () => {
+        setOpenQRScanner(true);
     }
 
     useEffect(() => {
@@ -86,16 +98,8 @@ const ExperimentsScreen = (props) => {
     }
 
     const shareExperiment = (experiment) => {
-        Alert.alert(
-            "Essa funcionalidade ainda não está disponível",
-            "Em breve você poderá compartilhar seus experimentos com outros usuários.😉",
-            [
-                {
-                    text: "Ok",
-                    style: "cancel"
-                }
-            ]
-        );
+        console.log("Compartilhando experimento", experiment);
+        setOpenQRModal(true);
     }
     
 
@@ -143,6 +147,17 @@ const ExperimentsScreen = (props) => {
     return (
         <View style={styles.container}>
             <Text style={styles.header}>Meus experimentos</Text>
+            
+            <View style={style.actions}>
+                <TouchableOpacity onPress={dispatchCreateModalEvent}>
+                    <Text style={[styles.modernButton, {width: 305, textAlign: 'center'}]}>Novo experimento</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={dispatchOpenQRCamera}>
+                    <Text style={[styles.modernButton, {padding: 13}]}>
+                        <Icon name="camera" size={30} color="#4682b4" />
+                    </Text>
+                </TouchableOpacity>
+            </View>
             <FlatList
                 data={props.experiments}
                 keyExtractor={(item) => item.id.toString()}
@@ -172,7 +187,7 @@ const ExperimentsScreen = (props) => {
                                         style={style.buttonContainer}
                                         onPress={() => shareExperiment(item)}
                                     >
-                                        <Icon name="share-social" size={30} color="#4682b4" />
+                                        <Icon name="qr-code" size={30} color="#4682b4" />
                                     </TouchableOpacity>
                                 )}
                                 
@@ -199,9 +214,8 @@ const ExperimentsScreen = (props) => {
                 )}
                 style={{ width: '100%',}}
             />
-            <TouchableOpacity onPress={dispatchCreateModalEvent}>
-                <Text style={styles.modernButton}>Novo experimento</Text>
-            </TouchableOpacity>
+
+
             <ExperimentModal 
                 visible={showCreateModal}
                 title="Novo experimento"
@@ -210,6 +224,45 @@ const ExperimentsScreen = (props) => {
                 submitText="Criar"
                 />
             <NotificationHandler />
+            
+            <CustomModal
+                title={"QR Code do experimento"}
+                visible={openQRModal}
+                onCancel={() => setOpenQRModal(false)}
+                noSubmit
+                cancelColor="gray"
+                cancelColorRipple="gray"
+            >
+                <View style={style.QRContainer}>
+                    <QRCode
+                        value={"https://google.com.br"}
+                        size={350}
+                        logo={FanemImage}
+                        logoSize={70}
+                        logoBackgroundColor='transparent'
+                    />
+                </View>
+            </CustomModal>
+
+            <CustomModal
+                title={"QR Code do experimento"}
+                visible={openQRScanner}
+                onCancel={() => setOpenQRScanner(false)}
+                noSubmit
+                cancelColor="gray"
+                cancelColorRipple="gray"
+            >
+                <View style={style.QRContainer}>
+                    <QRScanner 
+                        onQRCodeScanned={(data) => {
+                            console.log("QR Code scanned", data);
+                            setOpenQRScanner(false);
+                        }
+                        }
+                    />
+                </View>
+            </CustomModal>
+
         </View>
     );
 };
@@ -249,6 +302,17 @@ const style = StyleSheet.create({
     },
     buttonContainer: {
         margin: 8,
+    },
+    actions: {
+        width: "100%",
+        flexDirection: "row",
+        justifyContent: "flex-end",
+    },
+    QRContainer: {
+        alignItems: "center",
+        justifyContent: "center",
+        height: 500,
+        width: 350,
     },
 });
 
