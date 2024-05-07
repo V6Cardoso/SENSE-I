@@ -13,8 +13,8 @@ import QRScanner from '../components/QRScanner';
 import CustomModal from '../components/CustomModal';
 import NotificationHandler from '../utils/NotificationHandler';
 
-import { sendExperiment, removeExperiment } from '../utils/fetchData';
-import { getExperiments, deleteExperiment, updateExperiment } from '../database/dbSenseI';
+import { sendExperiment, removeExperiment, getExperiment } from '../utils/fetchData';
+import { getExperiments, deleteExperiment, updateExperiment, insertExperiment } from '../database/dbSenseI';
 
 import { connect } from "react-redux";
 import { setExperimentsList } from "../../context/actions/experimentActions";
@@ -25,6 +25,7 @@ const ExperimentsScreen = (props) => {
     const [notificationToken, setNotificationToken] = useState(null);
 
     const [openQRModal, setOpenQRModal] = useState(false);
+    const [qrData, setQRData] = useState(null);
     const [openQRScanner, setOpenQRScanner] = useState(false);
 
     const FanemImage = require('../../assets/icon.png');
@@ -90,7 +91,7 @@ const ExperimentsScreen = (props) => {
             console.log("Enviando experimento", experiment);
             const response = await sendExperiment(experiment, notificationToken);
             console.log("Experimento enviado", response);
-            await updateExperiment(experiment.id, { serverId: parseInt(response) });
+            await updateExperiment(experiment.id, { serverId: response });
             fetchData();
         } catch (error) {
             console.error("Error uploading experiment: ", error);
@@ -99,7 +100,24 @@ const ExperimentsScreen = (props) => {
 
     const shareExperiment = (experiment) => {
         console.log("Compartilhando experimento", experiment);
+        setQRData(experiment.serverId);
         setOpenQRModal(true);
+    }
+
+    const handleQRCodeScanned = async (data) => {
+        setOpenQRScanner(false);
+        console.log("QR Code scanned", data);
+        const response = await getExperiment(data);
+        console.log("Experimento recebido", response);
+        if (response) {
+            response.serverId = response.id;
+            response.id = null;
+            await insertExperiment(response);
+            fetchData();
+        }
+
+        
+        
     }
     
 
@@ -191,12 +209,14 @@ const ExperimentsScreen = (props) => {
                                     </TouchableOpacity>
                                 )}
                                 
-                                <TouchableOpacity
-                                    style={style.buttonContainer}
-                                    onPress={() => alertRemoveExperiment(item.id, item.serverId)}
-                                >
-                                    <Icon name="trash" size={30} color="red" />
-                                </TouchableOpacity>
+                                {item.owner == notificationToken &&
+                                    <TouchableOpacity
+                                        style={style.buttonContainer}
+                                        onPress={() => alertRemoveExperiment(item.id, item.serverId)}
+                                    >
+                                        <Icon name="trash" size={30} color="red" />
+                                    </TouchableOpacity>
+                                }
                             </View>
                         </View>
                         <Progress.Bar
@@ -235,7 +255,7 @@ const ExperimentsScreen = (props) => {
             >
                 <View style={style.QRContainer}>
                     <QRCode
-                        value={"https://google.com.br"}
+                        value={qrData}
                         size={350}
                         logo={FanemImage}
                         logoSize={70}
@@ -254,11 +274,8 @@ const ExperimentsScreen = (props) => {
             >
                 <View style={style.QRContainer}>
                     <QRScanner 
-                        onQRCodeScanned={(data) => {
-                            console.log("QR Code scanned", data);
-                            setOpenQRScanner(false);
-                        }
-                        }
+                        onQRCodeScanned={handleQRCodeScanned}
+                        scanOnce={true}
                     />
                 </View>
             </CustomModal>
