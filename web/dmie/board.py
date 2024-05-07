@@ -15,6 +15,8 @@ load_dotenv()
 
 from dmie.db import get_db
 
+import uuid
+
 
 import requests
 import json
@@ -63,31 +65,34 @@ def addExperiment():
     print(data)
     experiment = data.get('experiment')
     token = data.get('pushToken')
+
+    id = str(uuid.uuid4())
+
     db = get_db()
     try:
-        cursor = db.execute(
-            "INSERT INTO experiments (name, incubator, temperature, temperatureLowThreshold, temperatureHighThreshold, humidity, humidityLowThreshold, humidityHighThreshold, startTimestamp, endTimestamp, createdTimestamp, observation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            (experiment.get('name'), experiment.get('incubator'), experiment.get('temperature'), experiment.get('temperatureLowThreshold'), experiment.get('temperatureHighThreshold'), experiment.get('humidity'), experiment.get('humidityLowThreshold'), experiment.get('humidityHighThreshold'), experiment.get('startTimestamp'), experiment.get('endTimestamp'), experiment.get('createdTimestamp'), experiment.get('observation'))
+        db.execute(
+            "INSERT INTO experiments (id, name, incubator, temperature, temperatureLowThreshold, temperatureHighThreshold, humidity, humidityLowThreshold, humidityHighThreshold, startTimestamp, endTimestamp, createdTimestamp, observation, owner) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (id ,experiment.get('name'), experiment.get('incubator'), experiment.get('temperature'), experiment.get('temperatureLowThreshold'), experiment.get('temperatureHighThreshold'), experiment.get('humidity'), experiment.get('humidityLowThreshold'), experiment.get('humidityHighThreshold'), experiment.get('startTimestamp'), experiment.get('endTimestamp'), experiment.get('createdTimestamp'), experiment.get('observation'), experiment.get('owner'))
         )
         db.commit()
 
-        experiment_id = cursor.lastrowid
         db.execute(
             "INSERT INTO device_experiments (device_id, experiment_id) VALUES (?, ?)",
-            (token, experiment_id)
+            (token, id)
         )
         db.commit()
-        print('experiment_id -> ', experiment_id)
-        return str(experiment_id)
+        
+        return id
     except Exception as e:
         print('e -> ', e)
         return str(e)
-
-@bp.route("/getExperiments", methods=["POST"])
-def getExperiments():
+    
+@bp.route("/getExperiment", methods=["POST"])
+def getExperiment():
+    form = request.form
     db = get_db()
-    experiments = db.execute("SELECT * FROM experiments").fetchall()
-    return json.dumps(experiments)
+    experiment = db.execute("SELECT id, name, incubator, temperature, temperatureLowThreshold, temperatureHighThreshold, humidity, humidityLowThreshold, humidityHighThreshold, startTimestamp, endTimestamp, createdTimestamp, observation FROM experiments WHERE id = ?", (form['id'],)).fetchone()
+    return json.dumps(dict(experiment))
 
 @bp.route("/deleteExperiment", methods=["POST"])
 def deleteExperiment():

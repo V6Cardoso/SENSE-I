@@ -33,9 +33,28 @@ function sendExperiment(experiment, token) {
             experiment: experiment,
             pushToken: token})
     })
-        .then(response => response.json())
+        .then(response => response.text())
         .then(response => {
             return response;
+        })
+        .catch(error => {
+            console.error(error);
+            return error;
+        }
+    );
+};
+
+function getExperiment(id) {
+    return fetch(url + "/getExperiment", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: "id=" + encodeURIComponent(id)
+    })
+        .then(response => response.json())
+        .then(data => {
+            return data;
         })
         .catch(error => {
             console.error(error);
@@ -126,4 +145,4 @@ function getSthCometData(device, attr, dateFrom, dateTo) {
     
     };
 
-export { getDevices, getOrionData, getSthCometData, sendToken, sendExperiment, removeExperiment};
+export { getDevices, getOrionData, getSthCometData, sendToken, sendExperiment, removeExperiment, getExperiment};

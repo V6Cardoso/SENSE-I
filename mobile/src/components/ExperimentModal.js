@@ -21,6 +21,8 @@ import { insertExperiment } from '../database/dbSenseI';
 import { connect } from "react-redux";
 import { addToExperiments } from "../../context/actions/experimentActions";
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const ExperimentModal = (props) => {
     const [name, setName] = useState('');
     const [incubator, setIncubator] = useState('');
@@ -46,6 +48,7 @@ const ExperimentModal = (props) => {
 
 
     const submitHandler = async () => {
+        token = await AsyncStorage.getItem('notificationToken');
         const experiment = {
             name: name,
             incubator: incubator,
@@ -59,6 +62,7 @@ const ExperimentModal = (props) => {
             endTimestamp: Math.floor(endDate.getTime() / 1000),
             createdTimestamp: Math.floor(new Date().getTime() / 1000),
             observation: observation,
+            owner: token,
         };
         const result = await insertExperiment(experiment);
         props.addToExperiments({id: result.insertId, ...experiment});

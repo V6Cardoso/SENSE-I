@@ -9,7 +9,7 @@ export async function createTables() {
   return new Promise((resolve, reject) => {
     const query = `CREATE TABLE IF NOT EXISTS Experiments (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                serverId INTEGER,
+                serverId TEXT,
                 name TEXT,
                 incubator TEXT,
                 temperature REAL,
@@ -21,7 +21,8 @@ export async function createTables() {
                 startTimestamp INTEGER,
                 endTimestamp INTEGER,
                 createdTimestamp INTEGER,
-                observation TEXT
+                observation TEXT,
+                owner TEXT
           )`;
 
     const query2 = "DROP TABLE IF EXISTS Experiments";
@@ -73,8 +74,9 @@ export async function insertExperiment(experiment) {
                 startTimestamp,
                 endTimestamp,
                 createdTimestamp,
-                observation
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+                observation,
+                owner
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     let dbCx = getDbConnection();
 
@@ -96,6 +98,7 @@ export async function insertExperiment(experiment) {
             experiment.endTimestamp,
             experiment.createdTimestamp,
             experiment.observation,
+            experiment.owner
           ],
           (_, result) => {
             resolve(result);

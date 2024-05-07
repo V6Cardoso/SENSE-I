@@ -14,7 +14,7 @@ CREATE TABLE server (
 );
 
 CREATE TABLE experiments (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  id TEXT PRIMARY KEY,
   name TEXT,
   incubator TEXT,
   temperature REAL,
@@ -26,7 +26,8 @@ CREATE TABLE experiments (
   startTimestamp INTEGER,
   endTimestamp INTEGER,
   createdTimestamp INTEGER,
-  observation TEXT
+  observation TEXT,
+  owner TEXT
 );
 
 CREATE TABLE devices(
