@@ -1,9 +1,11 @@
 import Config from "react-native-config";
 
+const url = "";
+
 function sendToken(token) {
     const urlEncodedData = "pushToken=" + encodeURIComponent(token);
     console.log(urlEncodedData);
-    return fetch("", {
+    return fetch(url + "/addDevice", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -22,7 +24,7 @@ function sendToken(token) {
 };
 
 function sendExperiment(experiment, token) {
-    return fetch("", {
+    return fetch(url + "/addExperiment", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -44,7 +46,7 @@ function sendExperiment(experiment, token) {
 
 function removeExperiment(id) {
     const urlEncodedData = "id=" + encodeURIComponent(id);
-    return fetch("", {
+    return fetch(url + "/deleteExperiment", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -64,7 +66,7 @@ function removeExperiment(id) {
 
 
 function getDevices() {
-    return fetch("",{
+    return fetch(url + "/getDevices",{
         method: 'GET',
         headers: {
             'Accept': 'application/json'
@@ -101,7 +103,7 @@ function getOrionData() {
     };
 
 function getSthCometData(device, attr, dateFrom, dateTo) {
-    return fetch("", {
+    return fetch(url + "/sthCometV2", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
