@@ -2,7 +2,7 @@ import React from 'react';
 import { useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, Button } from 'react-native';
 import { useState } from 'react';
-import { CameraView, useCameraPermissions } from 'expo-camera/next';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 
 import Icon from "react-native-vector-icons/Ionicons";
 
