@@ -3,15 +3,15 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
         paddingTop: 40,
-        backgroundColor: '#F5FCFF',
+        backgroundColor: '#5e5e6d',
     },
     header: {
         fontSize: 20,
         textAlign: 'center',
         margin: 10,
         fontWeight: 'bold',
+        color: '#F5FCFF',
     },
     modernButton: {
         backgroundColor: "#ffffff",
