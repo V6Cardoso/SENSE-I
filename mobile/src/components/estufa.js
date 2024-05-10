@@ -1,6 +1,9 @@
-import React from 'react';
+import { Suspense } from 'react';
 import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 import { useState } from 'react';
+
+import { Canvas } from '@react-three/fiber/native';
+import { EstufaModel } from './EstufaModel';
 
 import FanemImage from '../assets/images/502-C sketch.png';
 
@@ -15,10 +18,21 @@ const EstufaComponent = (props) => {
             <Text style={styles.text}>Estufa {props.estufa.name}</Text>
             <View style={styles.infoContainer}>
                 <View style={styles.data}>
-                    <Text style={styles.text}>Temperatura: {props.estufa.temperature}°C</Text>
-                    <Text style={styles.text}>Umidade: {props.estufa.humidity}%</Text>
+                    <Text style={styles.dataText}>Temperatura</Text>
+                    <Text style={styles.dataText}>🌡️ {props.estufa.temperature}°C</Text>
+                    <Text style={styles.dataText}>Umidade</Text>
+                    <Text style={styles.dataText}>💧 {props.estufa.humidity}%</Text>
                 </View>
-                <Image source={FanemImage} style={{ resizeMode: 'contain', flex: 1, margin: 10, maxHeight: 120 }} />
+                {/* <Image source={FanemImage} style={{ resizeMode: 'contain', flex: 1, margin: 10, maxHeight: 120 }} /> */}
+                <Canvas camera={{ position: [-2, 2.5, 5], fov: 20 }}>
+                    {/* <pointLight position={[0, 0, 1]} /> */}
+                    <Suspense>
+                        <EstufaModel />
+                    </Suspense>
+                </Canvas>
+                
+
+                    
             </View>
             <View style={styles.timestamp}>
                 <Text style={styles.timestampText}>Última atualização: {props.estufa.timestamp}</Text>
@@ -33,21 +47,17 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#F5FCFF',
-        borderWidth: 1,
-        borderColor: 'black',
-        borderRadius: 10,
-        maxHeight: 250,
-        minHeight: 250,
+        borderWidth: 0,
+        borderRadius: 20,
         margin: 10,
+        padding: 10,
     },
     ripple: {
-        color: 'lightyellow',
+        color: 'gray',
         borderless: false,
     },
     text: {
         fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
     },
     timestamp: {
         width: '100%',
@@ -62,14 +72,15 @@ const styles = StyleSheet.create({
     infoContainer: {
         flex: 1,
         flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
     },
     data: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'left',
-
+        alignItems: 'flex-start',
+        margin: 20,
+    },
+    dataText: {
+        fontSize: 18,
     },
 });
 
