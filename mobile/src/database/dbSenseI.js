@@ -1,4 +1,4 @@
-import * as SQLite from "expo-sqlite";
+import * as SQLite from "expo-sqlite/legacy";
 
 export function getDbConnection() {
   const cx = SQLite.openDatabase("senseI.db");
