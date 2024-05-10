@@ -92,13 +92,18 @@ def getExperiment():
     form = request.form
     db = get_db()
     experiment = db.execute("SELECT id, name, incubator, temperature, temperatureLowThreshold, temperatureHighThreshold, humidity, humidityLowThreshold, humidityHighThreshold, startTimestamp, endTimestamp, createdTimestamp, observation FROM experiments WHERE id = ?", (form['id'],)).fetchone()
+    if experiment is None:
+        return json.dumps(False)
+    
     return json.dumps(dict(experiment))
 
 @bp.route("/deleteExperiment", methods=["POST"])
 def deleteExperiment():
     form = request.form
     db = get_db()
-    db.execute("DELETE FROM experiments WHERE id = ?", (form['id'],))
+    deleted = db.execute("DELETE FROM experiments WHERE id = ? AND owner = ?", (form['id'], form['owner']))
+    if deleted.rowcount == 0:
+        return "Experiment not found"
     db.execute("DELETE FROM device_experiments WHERE experiment_id = ?", (form['id'],))
     db.commit()
     return "Experiment deleted"

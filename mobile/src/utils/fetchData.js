@@ -63,8 +63,8 @@ function getExperiment(id) {
     );
 };
 
-function removeExperiment(id) {
-    const urlEncodedData = "id=" + encodeURIComponent(id);
+function removeExperiment(id, token) {
+    const urlEncodedData = "id=" + encodeURIComponent(id) + "&pushToken=" + encodeURIComponent(token);
     return fetch(url + "/deleteExperiment", {
         method: 'POST',
         headers: {
