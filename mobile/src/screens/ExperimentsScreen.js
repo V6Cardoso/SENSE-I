@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useCallback, useMemo, useRef } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { useState } from 'react';
 import Icon from "react-native-vector-icons/Ionicons";
@@ -9,9 +9,12 @@ import QRCode from 'react-native-qrcode-svg';
 import styles from '../utils/styles';
 import ExperimentModal from '../components/ExperimentModal';
 import QRScanner from '../components/QRScanner';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import BottomSheet, { BottomSheetView, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
 import CustomModal from '../components/CustomModal';
 import NotificationHandler from '../utils/NotificationHandler';
+import ExperimentBottomSheetComponent from '../components/ExperimentBottomSheetComponent';
 
 import { sendExperiment, removeExperiment, getExperiment } from '../utils/fetchData';
 import { getExperiments, deleteExperiment, updateExperiment, insertExperiment } from '../database/dbSenseI';
@@ -29,6 +32,17 @@ const ExperimentsScreen = (props) => {
     const [openQRScanner, setOpenQRScanner] = useState(false);
 
     const FanemImage = require('../../assets/icon.png');
+
+    const bottomSheetRef = useRef(null);
+    const snapPoints = useMemo(() => ['50%'], []);
+    const handleCloseAction = () => bottomSheetRef.current?.close();
+    const handlePresentModalPress = () => bottomSheetRef.current?.expand();
+
+    const handleSheetChanges = useCallback((index) => {
+        console.log('handleSheetChanges', index);
+      }, []);
+
+    const [selectedExperimentValue, setSelectedExperimentValue] = useState(null);
 
 
     const closeCreateModalHandler = () => {
@@ -163,32 +177,30 @@ const ExperimentsScreen = (props) => {
 
 
     return (
-        <View style={styles.container}>
+        <GestureHandlerRootView style={styles.container}>
             <Text style={styles.header}>Meus experimentos</Text>
             
             <View style={style.actions}>
-                <TouchableOpacity onPress={dispatchCreateModalEvent}>
-                    <Text style={[styles.modernButton, {width: 305, textAlign: 'center'}]}>Novo experimento</Text>
+                <TouchableOpacity onPress={dispatchCreateModalEvent} style={[styles.modernButton, {width: 300}]}>
+                    <Text>Novo experimento</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={dispatchOpenQRCamera}>
-                    <Text style={[styles.modernButton, {padding: 13}]}>
-                        <Icon name="camera" size={30} color="#4682b4" />
-                    </Text>
+                <TouchableOpacity onPress={dispatchOpenQRCamera} style={[styles.modernButton, {padding: 16}]}>
+                    <Icon name="camera" size={30} color="#4682b4" />
                 </TouchableOpacity>
             </View>
             <FlatList
                 data={props.experiments}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
-                    <View style={style.experimentItem}>
+                    <TouchableOpacity style={style.experimentItem} onPress={() => { setSelectedExperimentValue(item); handlePresentModalPress(); }}>
                         <View style={style.divideContainer}>
                             <View style={style.infoContainer}>
-                                <Text style={styles.text}>{item.name}</Text>
-                                <Text style={styles.text}>Estufa {item.incubator.substring(item.incubator.indexOf('dmie') + 4)}</Text>
-                                <Text style={styles.text}>Temperatura:{item.temperature}</Text>
-                                <Text style={styles.text}>Umidade:{item.humidity}</Text>
-                                <Text style={styles.text}>Início do experimento: {new Date(item.startTimestamp * 1000).toLocaleString('pt-BR', { day: 'numeric', month: 'numeric', hour: 'numeric', minute: 'numeric' })}</Text>
-                                <Text style={styles.text}>Fim do experimento: {new Date(item.endTimestamp * 1000).toLocaleString('pt-BR', { day: 'numeric', month: 'numeric', hour: 'numeric', minute: 'numeric' })}</Text>
+                                {item.name && <Text style={styles.text}>{item.name}</Text>}
+                                {item.incubator && <Text style={styles.text}>Estufa {item.incubator.substring(item.incubator.indexOf('dmie') + 4)}</Text>}
+                                {item.temperature && <Text style={styles.text}>Temperatura:{item.temperature}</Text>}
+                                {item.humidity && <Text style={styles.text}>Umidade:{item.humidity}</Text>}
+                                {item.startTimestamp && <Text style={styles.text}>Início do experimento: {new Date(item.startTimestamp * 1000).toLocaleString('pt-BR', { day: 'numeric', month: 'numeric', hour: 'numeric', minute: 'numeric' })}</Text>}
+                                {item.endTimestamp && <Text style={styles.text}>Fim do experimento: {new Date(item.endTimestamp * 1000).toLocaleString('pt-BR', { day: 'numeric', month: 'numeric', hour: 'numeric', minute: 'numeric' })}</Text>}
                             </View>
                             <View style={style.buttonsContainer}>
                                 {!item.serverId && notificationToken && (
@@ -230,7 +242,7 @@ const ExperimentsScreen = (props) => {
 
                         />
                         
-                    </View>
+                    </TouchableOpacity>
                 )}
                 style={{ width: '100%',}}
             />
@@ -279,8 +291,20 @@ const ExperimentsScreen = (props) => {
                     />
                 </View>
             </CustomModal>
+            <BottomSheet
+                ref={bottomSheetRef}
+                index={-1}
+                snapPoints={snapPoints}
+                onChange={handleSheetChanges}
+                backgroundStyle={{ backgroundColor: '#F5FCFF' }}
+                enablePanDownToClose={true}
 
-        </View>
+            >
+                <BottomSheetScrollView contentContainerStyle={style.contentContainer}>
+                    <ExperimentBottomSheetComponent value={selectedExperimentValue} />
+                </BottomSheetScrollView>
+            </BottomSheet>
+        </GestureHandlerRootView>
     );
 };
 
@@ -291,19 +315,13 @@ const style = StyleSheet.create({
         margin: 10,
     },
     experimentItem: {
-        borderRadius: 10,
-        marginHorizontal: 10,
-        marginBottom: 15,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-        borderRadius: 10,
-        padding: 20,
+        flex: 1,
+        justifyContent: 'center',
+        backgroundColor: '#F5FCFF',
+        borderWidth: 0,
+        borderRadius: 15,
+        margin: 10,
+        padding: 15,
     },
     divideContainer: {
         marginBottom: 10,
@@ -323,13 +341,16 @@ const style = StyleSheet.create({
     actions: {
         width: "100%",
         flexDirection: "row",
-        justifyContent: "flex-end",
+        justifyContent: "space-between",
     },
     QRContainer: {
         alignItems: "center",
         justifyContent: "center",
         height: 500,
         width: 350,
+    },
+    contentContainer: {
+        alignItems: 'center',
     },
 });
 
