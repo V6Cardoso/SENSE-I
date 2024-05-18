@@ -5,31 +5,15 @@ import {
   Text,
   StyleSheet,
   Alert,
-  TextInput,
-  Button,
-  Switch,
   TouchableOpacity,
-  Dimensions,
-
 } from "react-native";
-import { Svg, Rect, Text as TextSVG } from 'react-native-svg';
-
-import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart
-} from "react-native-chart-kit";
 import DropDownPicker from "react-native-dropdown-picker";
 import Icon from "react-native-vector-icons/Ionicons";
-
 import { connect } from "react-redux";
 
 import CustomTimePicker from "../components/CustomTimePicker";
 import STHCometGraph from '../components/STHCometGraph';
-import { getSthCometData } from "../utils/fetchData";
+
 import styles from "../utils/styles";
 
 const GraphScreen = (props) => {
@@ -44,7 +28,6 @@ const GraphScreen = (props) => {
   const [dateTo, setDateTo] = useState(null);
 
   const [search, setSearch] = useState(false);
-
 
   const validateForm = () => {
     return device && attr && dateFrom && dateTo;
@@ -65,9 +48,12 @@ const GraphScreen = (props) => {
 
   useEffect(() => {
     if (!Array.isArray(props.devices))
-        return;
-    
-    setIncubators(props.devices.map((device) => ({label: "Estufa " + device.device_id.substring(device.device_id.indexOf('dmie') + 4), value: device.entity_name})));
+      return;
+
+    setIncubators(props.devices.map((device) => ({
+      label: "Estufa " + device.device_id.substring(device.device_id.indexOf('dmie') + 4),
+      value: device.entity_name
+    })));
   }, [props.devices]);
 
   return (
@@ -75,17 +61,14 @@ const GraphScreen = (props) => {
       <Text style={styles.header}>Gráficos</Text>
       <View style={style.inputContainer}>
         <View style={style.section}>
-          <View style={[style.buttonContainer, {zIndex: 2 }]}>
-            <Text>Estufa:</Text>
+          <View style={[style.dropdownContainer, { zIndex: 2 }]}>
+            <Text style={style.textLabel}>Estufa:</Text>
             <DropDownPicker
               placeholder="Selecione a estufa"
               items={incubators}
               defaultValue={device}
-              containerStyle={{ height: 40, width: 200 }}
+              containerStyle={style.dropdown}
               style={[styles.modernButton, {marginHorizontal: 0, borderColor: 'white'}]}
-              itemStyle={{
-                justifyContent: "flex-start",
-              }}
               dropDownContainerStyle={[styles.modernButton, {marginHorizontal: 0, padding: 0, borderColor: 'white'}]}
               onChangeItem={(item) => setDevice(item.value)}
               open={openDevice}
@@ -95,8 +78,8 @@ const GraphScreen = (props) => {
             />
           </View>
 
-          <View style={[style.buttonContainer, {zIndex: 1 }]}>
-            <Text>Parâmetro:</Text>
+          <View style={[style.dropdownContainer, { zIndex: 1 }]}>
+            <Text style={style.textLabel}>Parâmetro:</Text>
             <DropDownPicker
               placeholder="Selecione o parâmetro"
               items={[
@@ -104,11 +87,8 @@ const GraphScreen = (props) => {
                 { label: "Umidade", value: "humidity" },
               ]}
               defaultValue={attr}
-              containerStyle={{ height: 40, width: 200 }}
+              containerStyle={style.dropdown}
               style={[styles.modernButton, {marginHorizontal: 0, borderColor: 'white'}]}
-              itemStyle={{
-                justifyContent: "flex-start",
-              }}
               dropDownContainerStyle={[styles.modernButton, {marginHorizontal: 0, padding: 0, borderColor: 'white'}]}
               onChangeItem={(item) => setAttr(item.value)}
               open={openParam}
@@ -118,79 +98,62 @@ const GraphScreen = (props) => {
             />
           </View>
         </View>
-        
+
         <View style={style.section}>
-          <View style={style.buttonContainer}>
-            <Text>Data de:</Text>
+          <View style={style.inputWrapper}>
+            <Text style={style.textLabel}>Data de:</Text>
             <CustomTimePicker setDate={setDateFrom} />
           </View>
 
-          <View style={style.buttonContainer}>
-            <Text>Data até:</Text>
+          <View style={style.inputWrapper}>
+            <Text style={style.textLabel}>Data até:</Text>
             <CustomTimePicker setDate={setDateTo} />
           </View>
         </View>
 
         <TouchableOpacity style={styles.modernButton} onPress={handleSearch}>
-            <Text >Pesquisar</Text>
-            <Icon name="search" size={20} color="#4682b4" />
+          <Text >Pesquisar</Text>
+          <Icon name="search" size={20} color="#4682b4" />
         </TouchableOpacity>
 
         {search && (
           <STHCometGraph device={device} attr={attr} dateFrom={dateFrom} dateTo={dateTo} />
         )}
-        {/* <View style={style.buttonContainer}>
-          <TouchableOpacity style={styles.modernButton} onPress={() => handleDownload()}>
-            <Text>Download</Text>
-            <Icon name="download" size={20} color="#4682b4" />
-          </TouchableOpacity>
-
-        </View> */}
       </View>
     </View>
   );
 };
 
 const style = StyleSheet.create({
-  section: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginBottom: 10,
-  },
   inputContainer: {
     width: "100%",
   },
-  buttonContainer: {
-    marginBottom: 10,
+  section: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
   },
-  container: {
-    
-
-  
+  dropdownContainer: {
+    flex: 1,
+    marginHorizontal: 5,
   },
-  chartContainer: {
-    width: "100%",
-    height: 380,
-    backgroundColor: "#F5FCFF",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 3,
+  dropdown: {
+    height: 40,
   },
-  chartTitle: {
-    fontSize: 20,
-    textAlign: "center",
-    margin: 10,
+  inputWrapper: {
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  textLabel: {
+    fontSize: 16,
+    color: "#F5FCFF",
+    marginBottom: 5,
   },
 });
 
 const mapStateToProps = (state) => {
   return {
-      devices: state.devices.devices,
+    devices: state.devices.devices,
   };
 };
 
