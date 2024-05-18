@@ -65,22 +65,48 @@ const ExperimentBottomSheetComponent = (props) => {
                         {endTimestamp && <Text style={styles.dataText}>Fim do experimento: {new Date(endTimestamp * 1000).toLocaleString('pt-BR', { day: 'numeric', month: 'numeric', hour: 'numeric', minute: 'numeric' })}</Text>}
                     </View>
                     <View style={styles.data}>
-                        {temperatureLowThreshold && temperatureHighThreshold && <Text style={styles.dataText}>Limite de Temperatura</Text>}
-                        {temperatureLowThreshold && temperatureHighThreshold && <Text style={styles.dataText}>🌡️ {temperatureLowThreshold}°C - {temperatureHighThreshold}°C</Text>}
-                        {temperatureLowThreshold && <Text style={styles.dataText}>Limite Inferior de Temperatura</Text>}
-                        {temperatureLowThreshold && <Text style={styles.dataText}>🌡️ {temperatureLowThreshold}°C</Text>}
-                        {temperatureHighThreshold && <Text style={styles.dataText}>Limite Superior de Temperatura</Text>}
-                        {temperatureHighThreshold && <Text style={styles.dataText}>🌡️ {temperatureHighThreshold}°C</Text>}
-
-                        {humidityLowThreshold && humidityHighThreshold && <Text style={styles.dataText}>Limite de Umidade</Text>}
-                        {humidityLowThreshold && humidityHighThreshold && <Text style={styles.dataText}>💧 {humidityLowThreshold}% - {humidityHighThreshold}%</Text>}
-                        {humidityLowThreshold && <Text style={styles.dataText}>Limite Inferior de Umidade</Text>}
-                        {humidityLowThreshold && <Text style={styles.dataText}>💧 {humidityLowThreshold}%</Text>}
-                        {humidityHighThreshold && <Text style={styles.dataText}>Limite Superior de Umidade</Text>}
-                        {humidityHighThreshold && <Text style={styles.dataText}>💧 {humidityHighThreshold}%</Text>}
-
-                        
-
+                        {temperatureLowThreshold && temperatureHighThreshold ? (
+                            <>
+                                <Text style={styles.dataText}>Limite de Temperatura</Text>
+                                <Text style={styles.dataText}>🌡️ {temperatureLowThreshold}°C - {temperatureHighThreshold}°C</Text>
+                            </>
+                        ) : (
+                            <>
+                                {temperatureLowThreshold && (
+                                    <>
+                                        <Text style={styles.dataText}>Limite Inferior de Temperatura</Text>
+                                        <Text style={styles.dataText}>🌡️ {temperatureLowThreshold}°C</Text>
+                                    </>
+                                )}
+                                {temperatureHighThreshold && (
+                                    <>
+                                        <Text style={styles.dataText}>Limite Superior de Temperatura</Text>
+                                        <Text style={styles.dataText}>🌡️ {temperatureHighThreshold}°C</Text>
+                                    </>
+                                )}
+                            </>
+                        )}
+                        {humidityLowThreshold && humidityHighThreshold ? (
+                            <>
+                                <Text style={styles.dataText}>Limite de Umidade</Text>
+                                <Text style={styles.dataText}>💧 {humidityLowThreshold}% - {humidityHighThreshold}%</Text>
+                            </>
+                        ) : (
+                            <>
+                                {humidityLowThreshold && (
+                                    <>
+                                        <Text style={styles.dataText}>Limite Inferior de Umidade</Text>
+                                        <Text style={styles.dataText}>💧 {humidityLowThreshold}%</Text>
+                                    </>
+                                )}
+                                {humidityHighThreshold && (
+                                    <>
+                                        <Text style={styles.dataText}>Limite Superior de Umidade</Text>
+                                        <Text style={styles.dataText}>💧 {humidityHighThreshold}%</Text>
+                                    </>
+                                )}
+                            </>
+                        )}
                     </View>
                     <View style={styles.data}>
                         {observation && <Text style={styles.dataText}>Observação: {observation}</Text>}
