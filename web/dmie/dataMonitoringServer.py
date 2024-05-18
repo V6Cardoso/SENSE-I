@@ -23,7 +23,7 @@ def get_experiments_finished():
     current_time = int(time.time())
     db = get_db()
     return db.execute(
-        "SELECT id, incubator FROM experiments WHERE endTimestamp < ?",
+        "SELECT id, incubator, name FROM experiments WHERE endTimestamp < ?",
         (current_time,)
     ).fetchall()
 
@@ -33,9 +33,10 @@ def check_experiments(orion_data):
     finished_experiments = get_experiments_finished()
     for experiment in finished_experiments:
         experiment_id = experiment['id']
+        experiment_name = experiment['name']
         affected_devices = get_affected_devices_push_tokens_experiments(experiment_id)
         print('Affected devices:', affected_devices)
-        response = send_push_message(token=affected_devices, title='Experiment finished', message=f'Experiment {experiment_id} has finished')
+        response = send_push_message(token=affected_devices, title='O experimento terminou!', message=f'Experimento {experiment_name} terminou.')
         print(response)
         if response:
             delete_experiment(experiment_id)
@@ -88,10 +89,6 @@ def get_affected_devices_push_tokens_incubator(incubator):
 
 def delete_experiment(experiment_id):
     db = get_db()
-    db.execute(
-        "DELETE FROM experiments WHERE id = ?",
-        (experiment_id,)
-    )
     db.execute(
         "DELETE FROM device_experiments WHERE experiment_id = ?",
         (experiment_id,)

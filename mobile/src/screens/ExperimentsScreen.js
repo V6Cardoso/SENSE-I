@@ -123,10 +123,10 @@ const ExperimentsScreen = (props) => {
 
 
 
-    const alertRemoveExperiment = (id, serverId) => {
+    const alertRemoveExperiment = (item) => {
         Alert.alert(
             "Remover experimento",
-            "Deseja remover o experimento?",
+            "Deseja remover o experimento " + item.name + "?",
             [
                 {
                     text: "Cancelar",
@@ -134,17 +134,17 @@ const ExperimentsScreen = (props) => {
                 },
                 {
                     text: "Remover",
-                    onPress: () => handleRemoveExperiment(id, serverId)
+                    onPress: () => handleRemoveExperiment(item)
                 }
             ]
         );
     }
 
-    const handleRemoveExperiment = async (id, serverId) => {
-        if (serverId) {
-            const response = await removeExperiment(serverId);
+    const handleRemoveExperiment = async (item) => {
+        if (item.owner == notificationToken && item.serverId) { 
+            const response = await removeExperiment(item.serverId);
         }
-        await deleteExperiment(id);
+        await deleteExperiment(item.id);
         fetchData();
     }
 
@@ -212,7 +212,7 @@ const ExperimentsScreen = (props) => {
                                 {item.owner == notificationToken &&
                                     <TouchableOpacity
                                         style={style.buttonContainer}
-                                        onPress={() => alertRemoveExperiment(item.id, item.serverId)}
+                                        onPress={() => alertRemoveExperiment(item)}
                                     >
                                         <Icon name="trash" size={30} color="red" />
                                     </TouchableOpacity>
