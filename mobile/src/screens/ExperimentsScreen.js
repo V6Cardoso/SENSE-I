@@ -12,11 +12,15 @@ import QRScanner from '../components/QRScanner';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheet, { BottomSheetView, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
+import { shareAsync } from 'expo-sharing';
+import * as FileSystem from 'expo-file-system';
+
+
 import CustomModal from '../components/CustomModal';
 import NotificationHandler from '../utils/NotificationHandler';
 import ExperimentBottomSheetComponent from '../components/ExperimentBottomSheetComponent';
 
-import { sendExperiment, removeExperiment, getExperiment } from '../utils/fetchData';
+import { sendExperiment, removeExperiment, getExperiment, getGraphFile } from '../utils/fetchData';
 import { getExperiments, deleteExperiment, updateExperiment, insertExperiment } from '../database/dbSenseI';
 
 import { connect } from "react-redux";
@@ -133,6 +137,57 @@ const ExperimentsScreen = (props) => {
         
         
     }
+
+    const alertDownloadExperiment = (experiment) => {
+        Alert.alert(
+            "Escolha o formato de download",
+            "",
+            [
+                {
+                    text: "Cancelar",
+                    style: "cancel"
+                },
+                {
+                    text: "PDF",
+                    onPress: () => downloadExperiment(experiment, "pdf")
+                },
+                {
+                    text: "csv",
+                    onPress: () => downloadExperiment(experiment, "csv")
+                }
+            ]
+        );
+    }
+
+    const downloadExperiment = async (experiment, format) => {
+        const response = await getGraphFile(experiment.serverId, format);
+        const fileName = experiment.name + "." + format;
+    
+        // Check if response is a Blob and convert it to base64
+        const base64Data = await response.blob().then(blob => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        });
+    
+        //pdf
+        if (format == "pdf") {
+            const pdfUri = FileSystem.cacheDirectory + fileName;
+            await FileSystem.writeAsStringAsync(pdfUri, base64Data, { encoding: FileSystem.EncodingType.Base64 });
+            await shareAsync(pdfUri, { mimeType: 'application/pdf', dialogTitle: 'Compartilhar PDF' });
+        }
+        //excel
+        else if (format == "csv") {
+            const csvUri = FileSystem.cacheDirectory + fileName;
+            await FileSystem.writeAsStringAsync(csvUri, base64Data, { encoding: FileSystem.EncodingType.Base64 });
+            await shareAsync(csvUri, { mimeType: 'text/csv', dialogTitle: 'Compartilhar CSV' });
+        }
+    }
+
+
     
 
 
@@ -220,15 +275,22 @@ const ExperimentsScreen = (props) => {
                                         <Icon name="qr-code" size={30} color="#4682b4" />
                                     </TouchableOpacity>
                                 )}
-                                
-                                {item.owner == notificationToken &&
+
+                                {item.serverId && notificationToken && item.endTimestamp < getCurrentTime() && (
                                     <TouchableOpacity
                                         style={style.buttonContainer}
-                                        onPress={() => alertRemoveExperiment(item)}
+                                        onPress={() => alertDownloadExperiment(item)}
                                     >
-                                        <Icon name="trash" size={30} color="red" />
+                                        <Icon name="download" size={30} color="#4682b4" />
                                     </TouchableOpacity>
-                                }
+                                )}
+                                
+                                <TouchableOpacity
+                                    style={style.buttonContainer}
+                                    onPress={() => alertRemoveExperiment(item)}
+                                >
+                                    <Icon name="trash" size={30} color="red" />
+                                </TouchableOpacity>
                             </View>
                         </View>
                         <Progress.Bar

@@ -83,6 +83,24 @@ function removeExperiment(id, token) {
     );
 }
 
+function getGraphFile(serverId, format) {
+    return fetch(url + "/downloadGraph", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: "experiment_id=" + encodeURIComponent(serverId) + "&format=" + encodeURIComponent(format)
+    })
+        .then(response => {
+            return response;
+        })
+        .catch(error => {
+            console.error(error);
+            return error;
+        }
+    );
+}
+
 
 function getDevices() {
     return fetch(url + "/getDevices",{
@@ -145,4 +163,4 @@ function getSthCometData(device, attr, dateFrom, dateTo) {
     
     };
 
-export { getDevices, getOrionData, getSthCometData, sendToken, sendExperiment, removeExperiment, getExperiment};
+export { getDevices, getOrionData, getSthCometData, sendToken, sendExperiment, removeExperiment, getExperiment, getGraphFile };
