@@ -38,7 +38,10 @@ def create_app(test_config=None):
     # apply the blueprints to the app
     from dmie import board
 
+    from dmie import downloadGraphHandler
+
     app.register_blueprint(board.bp)
+    app.register_blueprint(downloadGraphHandler.bp)
     app.add_url_rule("/", endpoint="index")
 
 
