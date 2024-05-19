@@ -146,43 +146,22 @@ def getOrionData():
     response = requests.request("GET", url, headers=headers)
     return response.json()
 
-@bp.route("/getSthCometData", methods=["POST"])
-def getSthCometData():
-    form = request.form
-    
-    url = os.getenv('IP')
-    if url is None:
-        return "No env IP"
-    
-    url = url + ":8666/STH/v2/entities/" + form['device'] + '/attrs/' + form['attr']
-    
-    headers = {
-        'fiware-service': 'smart',
-        'fiware-servicepath': '/'
-    }
 
-    params = {
-        'type': 'estufa',
-        'lastN': int(form['lastN']) if form['lastN'] else None,
-        'hLimit': int(form['hLimit']) if form['hLimit'] else None,
-        'hOffset': int(form['hOffset']) if form['hOffset'] else None,
-        'dateFrom': form['dateFrom'] if form['dateFrom'] else None,
-        'dateTo': form['dateTo'] if form['dateTo'] else None
-    }
-    
-    response = requests.request("GET", url, headers=headers, params=params)
-    return response.json()
 
 @bp.route("/sthCometV2", methods=["POST"])
 def sthCometV2():
     data = request.form
-    print(data)
+    result = getSthCometData(data['dateFrom'], data['dateTo'], data['device'], data['attr'], data['samples'])
+    return result
+
+
+def getSthCometData(dateFrom, dateTo, device, attr, samples):
 
     url = os.getenv('IP')
     if url is None:
         return "No env IP"
     
-    url = url + ":8666/STH/v2/entities/" + data['device'] + '/attrs/' + data['attr']
+    url = url + ":8666/STH/v2/entities/" + device + '/attrs/' + attr
 
     headers = {
         'fiware-service': 'smart',
@@ -190,8 +169,8 @@ def sthCometV2():
     }
 
     responses = []
-    start_date = data['dateFrom'] # ISO 8601
-    end_date = data['dateTo'] # ISO 8601
+    start_date = dateFrom # ISO 8601
+    end_date = dateTo # ISO 8601
 
     while start_date < end_date:
         params = {
@@ -216,7 +195,7 @@ def sthCometV2():
     extracted_data = extract_date_and_value(responses)
     print('len(extracted_data) -> ', len(extracted_data))
 
-    samples = int(data['samples']) if data['samples'].isdigit() else data['samples']
+    samples = int(samples) if samples.isdigit() else samples
     if samples != '':
         variavel = convert_average_data(extracted_data, samples)
         print(variavel)
