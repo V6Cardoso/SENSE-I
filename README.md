@@ -21,7 +21,7 @@ Siga as etapas abaixo para executar o projeto com Docker:
     ```
 5. Execute a imagem Docker:
     ```
-    docker run -p 5000:5000 -d dmie
+    docker run -p 80:5000 -d dmie
     ```
 
 ## Executando Localmente
