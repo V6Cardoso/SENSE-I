@@ -1,18 +1,19 @@
 import { Suspense } from 'react';
-import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 
 import { Canvas } from '@react-three/fiber/native';
 import { EstufaModel } from './EstufaModel';
 
 import FanemImage from '../assets/images/502-C sketch.png';
+import useControls from 'r3f-native-orbitcontrols';
 
 const EstufaComponent = (props) => {
+    const [OrbitControls, events] = useControls();
 
     return (
-        <Pressable
+        <TouchableOpacity
             style={styles.container}
-            android_ripple={styles.ripple}
             onPress={props.onPress}>
 
             <Text style={styles.text}>Estufa {props.estufa.name}</Text>
@@ -24,24 +25,29 @@ const EstufaComponent = (props) => {
                     <Text style={styles.dataText}>💧 {props.estufa.humidity}%</Text>
                 </View>
                 {/* <Image source={FanemImage} style={{ resizeMode: 'contain', flex: 1, margin: 10, maxHeight: 120 }} /> */}
-                <Canvas camera={{ position: [-2, 2.5, 5], fov: 20 }}>
-                    {/* <pointLight position={[0, 0, 1]} /> */}
-                    <Suspense>
-                        <EstufaModel />
-                    </Suspense>
-                </Canvas>
-                
-
-                    
+                <View style={styles.View} {...events}>
+                    <Canvas camera={{ position: [-2, 2.5, 5], fov: 20 }} style={{ height: 130, width: 200 }}>
+                        {/* <pointLight position={[0, 0, 1]} /> */}
+                        <OrbitControls enablePan={false} />
+                        <Suspense>
+                            <EstufaModel />
+                        </Suspense>
+                    </Canvas>
+                </View>
             </View>
             <View style={styles.timestamp}>
                 <Text style={styles.timestampText}>Última atualização: {props.estufa.timestamp}</Text>
             </View>
-        </Pressable>
+        </TouchableOpacity>
     );
 };
 
 const styles = StyleSheet.create({
+    View: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     container: {
         flex: 1,
         justifyContent: 'center',
@@ -51,10 +57,6 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         margin: 10,
         padding: 10,
-    },
-    ripple: {
-        color: 'gray',
-        borderless: false,
     },
     text: {
         fontSize: 20,

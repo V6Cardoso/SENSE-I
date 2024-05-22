@@ -38,7 +38,7 @@ const ExperimentsScreen = (props) => {
     const FanemImage = require('../../assets/icon.png');
 
     const bottomSheetRef = useRef(null);
-    const snapPoints = useMemo(() => ['50%'], []);
+    const snapPoints = useMemo(() => ['70%'], []);
     const handleCloseAction = () => bottomSheetRef.current?.close();
     const handlePresentModalPress = () => bottomSheetRef.current?.expand();
 
