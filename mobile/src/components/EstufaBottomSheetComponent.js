@@ -5,10 +5,12 @@ import { View, Text, StyleSheet, FlatList, Pressable, TouchableOpacity } from "r
 
 
 import { Canvas } from '@react-three/fiber/native';
+import useControls from 'r3f-native-orbitcontrols';
 import { EstufaModel } from '../components/EstufaModel';
 import STHCometGraph from './STHCometGraph';
 
 const EstufaBottomSheetComponent = (props) => {
+    const [OrbitControls, events] = useControls();
 
     const [id, setId] = useState();
     const [name, setName] = useState();
@@ -42,12 +44,15 @@ const EstufaBottomSheetComponent = (props) => {
 
     return (
         <>
-            <Canvas camera={{ position: [-2, 2.5, 5], fov: 20 }} style={{ height:100, width:100 }}>
-                <ambientLight intensity={0.5} />
-                <Suspense>
-                <EstufaModel />
-                </Suspense>
-            </Canvas>
+            <View style={styles.View} {...events}>
+                <Canvas camera={{ position: [-2, 2.5, 5], fov: 20 }} style={{ height:130, width: 400 }}>
+                    <ambientLight intensity={0.5} />
+                    <OrbitControls enablePan={false} />
+                    <Suspense>
+                        <EstufaModel estufaAberta/>
+                    </Suspense>
+                </Canvas>
+            </View>
             <View style={styles.container}>
                 <Text style={styles.text}>Estufa {name}</Text>
                 <View style={styles.infoContainer}>
@@ -67,6 +72,11 @@ const EstufaBottomSheetComponent = (props) => {
 }
 
 const styles = StyleSheet.create({
+    View: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     container: {
         flex: 3,
         alignItems: 'center',

@@ -5,10 +5,12 @@ import { View, Text, StyleSheet, FlatList, Pressable, TouchableOpacity } from "r
 import * as Progress from 'react-native-progress';
 
 import { Canvas } from '@react-three/fiber/native';
+import useControls from 'r3f-native-orbitcontrols';
 import { EstufaModel } from '../components/EstufaModel';
 import STHCometGraph from './STHCometGraph';
 
 const ExperimentBottomSheetComponent = (props) => {
+    const [OrbitControls, events] = useControls();
 
     const [name, setName] = useState('');
     const [incubator, setIncubator] = useState('');
@@ -48,12 +50,15 @@ const ExperimentBottomSheetComponent = (props) => {
 
     return (
         <>
-            <Canvas camera={{ position: [-2, 2.5, 5], fov: 20 }} style={{ height:100, width:100 }}>
-                <ambientLight intensity={0.5} />
-                <Suspense>
-                <EstufaModel />
-                </Suspense>
-            </Canvas>
+            <View style={styles.View} {...events}>
+                <Canvas camera={{ position: [-2, 2.5, 5], fov: 20 }} style={{ height:200, width:400 }}>
+                    {/* <ambientLight intensity={0.5} /> */}
+                    <OrbitControls enablePan={false} />
+                    <Suspense>
+                    <EstufaModel />
+                    </Suspense>
+                </Canvas>
+            </View>
             <View style={styles.container}>
                 {name && <Text style={styles.text}>Experimento {name}</Text>}
                 <View style={styles.infoContainer}>
@@ -120,6 +125,11 @@ const ExperimentBottomSheetComponent = (props) => {
 }
 
 const styles = StyleSheet.create({
+    View: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     container: {
         flex: 3,
         alignItems: 'center',
