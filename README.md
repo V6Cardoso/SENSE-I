@@ -2,6 +2,8 @@
 
 Este é o repositório para o projeto SENSE-I.
 
+Este projeto tem como objetivo desenvolver uma prova de conceito para um dispositivo de monitoramento de variaveis coletadas por um hardware que está ligado a uma interface IoT que possui um uma aplicação móvel e web e para a exibição e operação com esses dados.
+
 ## Executando com Docker
 
 Siga as etapas abaixo para executar o projeto com Docker:
@@ -23,6 +25,31 @@ Siga as etapas abaixo para executar o projeto com Docker:
     ```
     docker run -p 80:5000 -d dmie
     ```
+
+## Hardware
+
+Para o hardware foram utilizados:
+1 - Microcontrolador ESP-32
+1 - Sensor de temperatura e umidade DHT-22
+1 - Fonte de alimentação de 15 watts
+
+Para a conexão do sensor com o microcontrolador foi utilizado um cabo com 3 fios e para a alimentação do microcontrolador com a fonte foi utilizado o cabo micro-USB.
+
+- Além disso, foram desenvolvidas cases para armazenar o microcontrolador e o sensor. O arquivo 3D do projeto, utilizado para a impressão das cases, encontra-se anexado na pasta denominada 'hardware'.
+
+Para efetuar a programação do microcontrolador siga os seguintes passos:
+
+1. Abra a IDE de sua preferência, recomendamos a Arduino IDE.
+
+2. Na aba 'Ferramentas', procure pela opção 'Portas', e então selecione o 'Gerenciador de portas' procure e instale pelo pacote 'esp32'.
+
+3. Na aba 'Gerenciador de biblioteca', instale a biblioteca 'DHT Sensor library PubSubClient'.
+
+4. Conecte o seu microcontrolador na porta USB do computador e identifique essa na IDE.
+
+5. Na barra de superior clique em 'Arquivos' e em 'Abrir', então procure o arquivo 'SENSEI-hardware' na pasta 'hardware' do repositório.
+
+4. Compile o projeto para o seu microcontrolador.
 
 ## Executando Localmente
 
@@ -46,7 +73,7 @@ Siga as etapas abaixo para executar o projeto localmente:
     ```
 5. Crie um arquivo `.env` dentro do diretório `dmie` e adicione as seguintes variáveis de ambiente:
     ```
-    IP=YOUR_FIWARE_IP_ADDRESS
+    IP=http://"YOUR_FIWARE_IP_ADDRESS"
     ```
 6. Execute o aplicativo Flask:
     ```
