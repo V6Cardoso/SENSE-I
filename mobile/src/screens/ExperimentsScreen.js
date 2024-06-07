@@ -125,7 +125,7 @@ const ExperimentsScreen = (props) => {
     const handleQRCodeScanned = async (data) => {
         setOpenQRScanner(false);
         console.log("QR Code scanned", data);
-        const response = await getExperiment(data);
+        const response = await getExperiment(data, notificationToken);
         console.log("Experimento recebido", response);
         if (response) {
             response.serverId = response.id;
@@ -210,8 +210,8 @@ const ExperimentsScreen = (props) => {
     }
 
     const handleRemoveExperiment = async (item) => {
-        if (item.owner == notificationToken && item.serverId) { 
-            const response = await removeExperiment(item.serverId);
+        if (item.serverId) { 
+            const response = await removeExperiment(item.serverId, notificationToken);
         }
         await deleteExperiment(item.id);
         fetchData();
