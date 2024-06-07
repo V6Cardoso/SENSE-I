@@ -44,13 +44,14 @@ function sendExperiment(experiment, token) {
     );
 };
 
-function getExperiment(id) {
+function getExperiment(id, token) {
+    console.log("getExperiment -> " + id + " " + token);
     return fetch(url + "/getExperiment", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: "id=" + encodeURIComponent(id)
+        body: "id=" + encodeURIComponent(id) + "&pushToken=" + encodeURIComponent(token)
     })
         .then(response => response.json())
         .then(data => {

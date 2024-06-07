@@ -94,6 +94,8 @@ def getExperiment():
     experiment = db.execute("SELECT id, name, incubator, temperature, temperatureLowThreshold, temperatureHighThreshold, humidity, humidityLowThreshold, humidityHighThreshold, startTimestamp, endTimestamp, createdTimestamp, observation FROM experiments WHERE id = ?", (form['id'],)).fetchone()
     if experiment is None:
         return json.dumps(False)
+    db.execute("INSERT INTO device_experiments (device_id, experiment_id) VALUES (?, ?)", (form['pushToken'], form['id']))
+    db.commit()
     
     return json.dumps(dict(experiment))
 
@@ -101,10 +103,8 @@ def getExperiment():
 def deleteExperiment():
     form = request.form
     db = get_db()
-    deleted = db.execute("DELETE FROM experiments WHERE id = ? AND owner = ?", (form['id'], form['owner']))
-    if deleted.rowcount == 0:
-        return "Experiment not found"
-    db.execute("DELETE FROM device_experiments WHERE experiment_id = ?", (form['id'],))
+
+    db.execute("DELETE FROM device_experiments WHERE experiment_id = ? AND device_id = ?", (form['id'], form['pushToken']))
     db.commit()
     return "Experiment deleted"
 
